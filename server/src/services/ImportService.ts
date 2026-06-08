@@ -19,7 +19,7 @@ export class ImportService {
       fs.createReadStream(filePath)
         .pipe(parse({ columns: true, trim: true, skip_empty_lines: true }))
         .on('data', (row: CsvRow) => {
-          if (row.url_or_email && row.source && row.date_collected) {
+          if (row.url_or_email && row.url_or_email.trim() !== "" && row.source) {
             parsedRows.push(row);
           }
         })
@@ -27,18 +27,21 @@ export class ImportService {
           try {
             const insertMany = db.transaction((rows: CsvRow[]) => {
               const stmt = db.prepare(`
-                INSERT INTO records (id, url_or_email, source, date_collected, imported_at, status)
-                VALUES (@id, @url_or_email, @source, @date_collected, @imported_at, 'new')
+                INSERT INTO records (id, url_or_email, source, date_collected, imported_at, status, notes)
+                VALUES (@id, @url_or_email, @source, @date_collected, @imported_at, 'new', @notes)
                 ON CONFLICT(url_or_email) DO NOTHING
               `);
 
               for (const row of rows) {
+                const isUrlOrEmail = this.isValidUrlOrEmail(row.url_or_email);
+                const notesValue = isUrlOrEmail ? null : 'Invalid URL or Email';  
                 const info = stmt.run({
                   id: crypto.randomUUID(), 
                   url_or_email: row.url_or_email,
                   source: row.source,
                   date_collected: row.date_collected,
-                  imported_at: new Date().toISOString()
+                  imported_at: new Date().toISOString(),
+                  notes: notesValue 
                 });
                 
                 if (info.changes > 0) {
@@ -62,5 +65,22 @@ export class ImportService {
           reject(error);
         });
     });
+  }
+
+  private isValidUrlOrEmail(input: string): boolean {
+    const urlPattern = /^https?:\/\/[^\s$.?#].[^\s]*$/i;
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    
+    return urlPattern.test(input) || emailPattern.test(input);
+  }
+
+  private isValidDate(date: string): boolean {
+    const datePattern = /^[^\s\/\-\.]*$/;
+    return datePattern.test(date);
+  }
+
+  private isValidSource(source: string): boolean {
+    const sourcePattern = /^[^\s\/\-\.]*$/;
+    return sourcePattern.test(source);
   }
 }

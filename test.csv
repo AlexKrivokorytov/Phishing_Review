@@ -1,3 +1,3 @@
 url_or_email,source,date_collected
-http://phishing-site.com,manual,2026-06-08T11:00:00Z
-user@test-phish.ru,csv_import,2026-06-08T12:00:00Z
+http://example-login.biz/secure,manual,2026-03-15
+user@phish-bank.com,csv_import,2026-03-20

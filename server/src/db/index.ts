@@ -1,8 +1,9 @@
 import Database from 'better-sqlite3';
 import path from 'path';
 
-const dbPath = path.resolve(__dirname, '../../database.db');
-const db = new Database(dbPath, { verbose: console.log }); 
+const isTest = process.env.NODE_ENV === 'test';
+const dbPath = isTest ? ':memory:' : path.resolve(__dirname, '../../database.db');
+const db = new Database(dbPath, { verbose: isTest ? undefined : console.log }); 
 
 db.pragma('foreign_keys = ON');
 
