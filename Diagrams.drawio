@@ -1,0 +1,268 @@
+<mxfile host="app.diagrams.net" pages="2">
+  <diagram name="Page-1" id="g6xv9gEKKby4JxGmQiye">
+    <mxGraphModel dx="1770" dy="997" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-1" parent="1" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;html=1;" value="records" vertex="1">
+          <mxGeometry height="350" width="300" x="80" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-2" parent="SIfebS9hRYbrdG8KM8-K-1" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;top=0;left=0;right=0;bottom=1;" value="" vertex="1">
+          <mxGeometry height="30" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-3" parent="SIfebS9hRYbrdG8KM8-K-2" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;fontStyle=1;overflow=hidden;whiteSpace=wrap;html=1;" value="PK" vertex="1">
+          <mxGeometry height="30" width="30" as="geometry">
+            <mxRectangle height="30" width="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-4" parent="SIfebS9hRYbrdG8KM8-K-2" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;fontStyle=5;overflow=hidden;whiteSpace=wrap;html=1;" value="&lt;b data-path-to-node=&quot;5,0,0&quot; data-index-in-node=&quot;0&quot;&gt;&lt;code data-path-to-node=&quot;5,0,0&quot; data-index-in-node=&quot;0&quot;&gt;id&lt;/code&gt;&lt;/b&gt; : &lt;code data-path-to-node=&quot;5,0,0&quot; data-index-in-node=&quot;5&quot;&gt;TEXT&lt;/code&gt;" vertex="1">
+          <mxGeometry height="30" width="270" x="30" as="geometry">
+            <mxRectangle height="30" width="270" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-5" parent="SIfebS9hRYbrdG8KM8-K-1" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;top=0;left=0;right=0;bottom=0;" value="" vertex="1">
+          <mxGeometry height="30" width="300" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-6" parent="SIfebS9hRYbrdG8KM8-K-5" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;editable=1;overflow=hidden;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="30" as="geometry">
+            <mxRectangle height="30" width="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-7" parent="SIfebS9hRYbrdG8KM8-K-5" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;" value="&lt;b data-path-to-node=&quot;5,1,0&quot; data-index-in-node=&quot;0&quot;&gt;&lt;code data-path-to-node=&quot;5,1,0&quot; data-index-in-node=&quot;0&quot;&gt;url_or_email&lt;/code&gt;&lt;/b&gt; : &lt;code data-path-to-node=&quot;5,1,0&quot; data-index-in-node=&quot;15&quot;&gt;TEXT&lt;/code&gt; &lt;code data-path-to-node=&quot;5,1,0&quot; data-index-in-node=&quot;20&quot;&gt;[UNIQUE, NOT NULL]&lt;/code&gt;" vertex="1">
+          <mxGeometry height="30" width="270" x="30" as="geometry">
+            <mxRectangle height="30" width="270" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-8" parent="SIfebS9hRYbrdG8KM8-K-1" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;top=0;left=0;right=0;bottom=0;" value="" vertex="1">
+          <mxGeometry height="30" width="300" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-9" parent="SIfebS9hRYbrdG8KM8-K-8" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;editable=1;overflow=hidden;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="30" as="geometry">
+            <mxRectangle height="30" width="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-10" parent="SIfebS9hRYbrdG8KM8-K-8" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;" value="&lt;b data-path-to-node=&quot;5,2,0&quot; data-index-in-node=&quot;0&quot;&gt;&lt;code data-path-to-node=&quot;5,2,0&quot; data-index-in-node=&quot;0&quot;&gt;source&lt;/code&gt;&lt;/b&gt; : &lt;code data-path-to-node=&quot;5,2,0&quot; data-index-in-node=&quot;9&quot;&gt;TEXT&lt;/code&gt; &lt;code data-path-to-node=&quot;5,2,0&quot; data-index-in-node=&quot;14&quot;&gt;[NOT NULL]&lt;/code&gt;" vertex="1">
+          <mxGeometry height="30" width="270" x="30" as="geometry">
+            <mxRectangle height="30" width="270" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-11" parent="SIfebS9hRYbrdG8KM8-K-1" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;top=0;left=0;right=0;bottom=0;" value="" vertex="1">
+          <mxGeometry height="30" width="300" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-12" parent="SIfebS9hRYbrdG8KM8-K-11" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;editable=1;overflow=hidden;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="30" as="geometry">
+            <mxRectangle height="30" width="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-13" parent="SIfebS9hRYbrdG8KM8-K-11" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;" value="&lt;b data-path-to-node=&quot;5,3,0&quot; data-index-in-node=&quot;0&quot;&gt;&lt;code data-path-to-node=&quot;5,3,0&quot; data-index-in-node=&quot;0&quot;&gt;date_collected&lt;/code&gt;&lt;/b&gt; : &lt;code data-path-to-node=&quot;5,3,0&quot; data-index-in-node=&quot;17&quot;&gt;TEXT&lt;/code&gt; &lt;code data-path-to-node=&quot;5,3,0&quot; data-index-in-node=&quot;22&quot;&gt;[NOT NULL]&lt;/code&gt;" vertex="1">
+          <mxGeometry height="30" width="270" x="30" as="geometry">
+            <mxRectangle height="30" width="270" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-40" parent="SIfebS9hRYbrdG8KM8-K-1" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;top=0;left=0;right=0;bottom=0;" vertex="1">
+          <mxGeometry height="50" width="300" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-41" parent="SIfebS9hRYbrdG8KM8-K-40" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;editable=1;overflow=hidden;whiteSpace=wrap;html=1;" vertex="1">
+          <mxGeometry height="50" width="30" as="geometry">
+            <mxRectangle height="50" width="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-42" parent="SIfebS9hRYbrdG8KM8-K-40" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;" value="&lt;b data-path-to-node=&quot;5,4,0&quot; data-index-in-node=&quot;0&quot;&gt;&lt;code data-path-to-node=&quot;5,4,0&quot; data-index-in-node=&quot;0&quot;&gt;label&lt;/code&gt;&lt;/b&gt; : &lt;code data-path-to-node=&quot;5,4,0&quot; data-index-in-node=&quot;8&quot;&gt;TEXT&lt;/code&gt; &lt;code data-path-to-node=&quot;5,4,0&quot; data-index-in-node=&quot;13&quot;&gt;[NULL]&amp;nbsp;CHECK (label IN (&#39;benign&#39;, &#39;suspicious&#39;, &#39;phishing&#39;, &#39;malware&#39;) OR label IS NULL)&lt;/code&gt;" vertex="1">
+          <mxGeometry height="50" width="270" x="30" as="geometry">
+            <mxRectangle height="50" width="270" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-43" parent="SIfebS9hRYbrdG8KM8-K-1" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;top=0;left=0;right=0;bottom=0;" vertex="1">
+          <mxGeometry height="30" width="300" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-44" parent="SIfebS9hRYbrdG8KM8-K-43" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;editable=1;overflow=hidden;whiteSpace=wrap;html=1;" vertex="1">
+          <mxGeometry height="30" width="30" as="geometry">
+            <mxRectangle height="30" width="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-45" parent="SIfebS9hRYbrdG8KM8-K-43" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;" value="&lt;b data-path-to-node=&quot;5,5,0&quot; data-index-in-node=&quot;0&quot;&gt;&lt;code data-path-to-node=&quot;5,5,0&quot; data-index-in-node=&quot;0&quot;&gt;notes&lt;/code&gt;&lt;/b&gt; : &lt;code data-path-to-node=&quot;5,5,0&quot; data-index-in-node=&quot;8&quot;&gt;TEXT&lt;/code&gt; &lt;code data-path-to-node=&quot;5,5,0&quot; data-index-in-node=&quot;13&quot;&gt;[DEFAULT &#39;&#39;]&lt;/code&gt;" vertex="1">
+          <mxGeometry height="30" width="270" x="30" as="geometry">
+            <mxRectangle height="30" width="270" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-46" parent="SIfebS9hRYbrdG8KM8-K-1" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;top=0;left=0;right=0;bottom=0;" vertex="1">
+          <mxGeometry height="60" width="300" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-47" parent="SIfebS9hRYbrdG8KM8-K-46" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;editable=1;overflow=hidden;whiteSpace=wrap;html=1;" vertex="1">
+          <mxGeometry height="60" width="30" as="geometry">
+            <mxRectangle height="60" width="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-48" parent="SIfebS9hRYbrdG8KM8-K-46" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;" value="&lt;b data-path-to-node=&quot;5,6,0&quot; data-index-in-node=&quot;0&quot;&gt;&lt;code data-path-to-node=&quot;5,6,0&quot; data-index-in-node=&quot;0&quot;&gt;status&lt;/code&gt;&lt;/b&gt; : &lt;code data-path-to-node=&quot;5,6,0&quot; data-index-in-node=&quot;9&quot;&gt;TEXT&lt;/code&gt; &lt;code data-path-to-node=&quot;5,6,0&quot; data-index-in-node=&quot;14&quot;&gt;[NOT NULL, DEFAULT &#39;new&#39;]&amp;nbsp;CHECK (status IN (&#39;new&#39;, &#39;reviewed&#39;, &#39;needs_second_review&#39;))&lt;/code&gt;" vertex="1">
+          <mxGeometry height="60" width="270" x="30" as="geometry">
+            <mxRectangle height="60" width="270" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-49" parent="SIfebS9hRYbrdG8KM8-K-1" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;top=0;left=0;right=0;bottom=0;" vertex="1">
+          <mxGeometry height="30" width="300" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-50" parent="SIfebS9hRYbrdG8KM8-K-49" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;editable=1;overflow=hidden;whiteSpace=wrap;html=1;" vertex="1">
+          <mxGeometry height="30" width="30" as="geometry">
+            <mxRectangle height="30" width="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-51" parent="SIfebS9hRYbrdG8KM8-K-49" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;" value="&lt;b data-path-to-node=&quot;5,7,0&quot; data-index-in-node=&quot;0&quot;&gt;&lt;code data-path-to-node=&quot;5,7,0&quot; data-index-in-node=&quot;0&quot;&gt;imported_at&lt;/code&gt;&lt;/b&gt; : &lt;code data-path-to-node=&quot;5,7,0&quot; data-index-in-node=&quot;14&quot;&gt;TEXT&lt;/code&gt; &lt;code data-path-to-node=&quot;5,7,0&quot; data-index-in-node=&quot;19&quot;&gt;[NOT NULL]&lt;/code&gt;" vertex="1">
+          <mxGeometry height="30" width="270" x="30" as="geometry">
+            <mxRectangle height="30" width="270" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-52" parent="SIfebS9hRYbrdG8KM8-K-1" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;top=0;left=0;right=0;bottom=0;" vertex="1">
+          <mxGeometry height="30" width="300" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-53" parent="SIfebS9hRYbrdG8KM8-K-52" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;editable=1;overflow=hidden;whiteSpace=wrap;html=1;" vertex="1">
+          <mxGeometry height="30" width="30" as="geometry">
+            <mxRectangle height="30" width="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-54" parent="SIfebS9hRYbrdG8KM8-K-52" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;" value="&lt;b data-path-to-node=&quot;5,8,0&quot; data-index-in-node=&quot;0&quot;&gt;&lt;code data-path-to-node=&quot;5,8,0&quot; data-index-in-node=&quot;0&quot;&gt;reviewed_at&lt;/code&gt;&lt;/b&gt; : &lt;code data-path-to-node=&quot;5,8,0&quot; data-index-in-node=&quot;14&quot;&gt;TEXT&lt;/code&gt; &lt;code data-path-to-node=&quot;5,8,0&quot; data-index-in-node=&quot;19&quot;&gt;[NULL]&lt;/code&gt;" vertex="1">
+          <mxGeometry height="30" width="270" x="30" as="geometry">
+            <mxRectangle height="30" width="270" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-27" parent="1" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;html=1;whiteSpace=wrap;" value="record_evidence_tags" vertex="1">
+          <mxGeometry height="150" width="230" x="490" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-28" parent="SIfebS9hRYbrdG8KM8-K-27" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;top=0;left=0;right=0;bottom=0;html=1;" value="" vertex="1">
+          <mxGeometry height="60" width="230" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-29" parent="SIfebS9hRYbrdG8KM8-K-28" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;fontStyle=1;overflow=hidden;html=1;whiteSpace=wrap;" value="PK,FK" vertex="1">
+          <mxGeometry height="60" width="60" as="geometry">
+            <mxRectangle height="60" width="60" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-30" parent="SIfebS9hRYbrdG8KM8-K-28" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;fontStyle=5;overflow=hidden;html=1;whiteSpace=wrap;" value="&lt;b data-path-to-node=&quot;9,0,0&quot; data-index-in-node=&quot;0&quot;&gt;&lt;code data-path-to-node=&quot;9,0,0&quot; data-index-in-node=&quot;0&quot;&gt;record_id&lt;/code&gt;&lt;/b&gt; : &lt;code data-path-to-node=&quot;9,0,0&quot; data-index-in-node=&quot;12&quot;&gt;TEXT&amp;nbsp;REFERENCES records(id) ON DELETE CASCADE&lt;/code&gt;" vertex="1">
+          <mxGeometry height="60" width="170" x="60" as="geometry">
+            <mxRectangle height="60" width="170" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-31" parent="SIfebS9hRYbrdG8KM8-K-27" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;top=0;left=0;right=0;bottom=1;html=1;" value="" vertex="1">
+          <mxGeometry height="60" width="230" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-32" parent="SIfebS9hRYbrdG8KM8-K-31" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;fontStyle=1;overflow=hidden;html=1;whiteSpace=wrap;" value="PK,FK" vertex="1">
+          <mxGeometry height="60" width="60" as="geometry">
+            <mxRectangle height="60" width="60" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-33" parent="SIfebS9hRYbrdG8KM8-K-31" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;fontStyle=5;overflow=hidden;html=1;whiteSpace=wrap;" value="&lt;b data-path-to-node=&quot;9,1,0&quot; data-index-in-node=&quot;0&quot;&gt;&lt;code data-path-to-node=&quot;9,1,0&quot; data-index-in-node=&quot;0&quot;&gt;tag_id&lt;/code&gt;&lt;/b&gt; : &lt;code data-path-to-node=&quot;9,1,0&quot; data-index-in-node=&quot;9&quot;&gt;INTEGER&amp;nbsp;REFERENCES tags(id) ON DELETE CASCADE&lt;/code&gt;" vertex="1">
+          <mxGeometry height="60" width="170" x="60" as="geometry">
+            <mxRectangle height="60" width="170" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-55" parent="1" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;html=1;" value="tags" vertex="1">
+          <mxGeometry height="110" width="190" x="490" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-56" parent="SIfebS9hRYbrdG8KM8-K-55" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;top=0;left=0;right=0;bottom=1;" value="" vertex="1">
+          <mxGeometry height="30" width="190" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-57" parent="SIfebS9hRYbrdG8KM8-K-56" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;fontStyle=1;overflow=hidden;whiteSpace=wrap;html=1;" value="PK" vertex="1">
+          <mxGeometry height="30" width="30" as="geometry">
+            <mxRectangle height="30" width="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-58" parent="SIfebS9hRYbrdG8KM8-K-56" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;fontStyle=5;overflow=hidden;whiteSpace=wrap;html=1;" value="&lt;b data-path-to-node=&quot;7,0,0&quot; data-index-in-node=&quot;0&quot;&gt;&lt;code data-path-to-node=&quot;7,0,0&quot; data-index-in-node=&quot;0&quot;&gt;id&lt;/code&gt;&lt;/b&gt; : &lt;code data-path-to-node=&quot;7,0,0&quot; data-index-in-node=&quot;5&quot;&gt;INTEGER&lt;/code&gt;" vertex="1">
+          <mxGeometry height="30" width="160" x="30" as="geometry">
+            <mxRectangle height="30" width="160" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-59" parent="SIfebS9hRYbrdG8KM8-K-55" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;top=0;left=0;right=0;bottom=0;" value="" vertex="1">
+          <mxGeometry height="50" width="190" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-60" parent="SIfebS9hRYbrdG8KM8-K-59" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;editable=1;overflow=hidden;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="50" width="30" as="geometry">
+            <mxRectangle height="50" width="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-61" parent="SIfebS9hRYbrdG8KM8-K-59" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;" value="&lt;b data-path-to-node=&quot;7,1,0&quot; data-index-in-node=&quot;0&quot;&gt;&lt;code data-path-to-node=&quot;7,1,0&quot; data-index-in-node=&quot;0&quot;&gt;name&lt;/code&gt;&lt;/b&gt; : &lt;code data-path-to-node=&quot;7,1,0&quot; data-index-in-node=&quot;7&quot;&gt;TEXT&lt;/code&gt; &lt;code data-path-to-node=&quot;7,1,0&quot; data-index-in-node=&quot;12&quot;&gt;[UNIQUE, NOT NULL]&lt;/code&gt;" vertex="1">
+          <mxGeometry height="50" width="160" x="30" as="geometry">
+            <mxRectangle height="50" width="160" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-70" edge="1" parent="1" source="SIfebS9hRYbrdG8KM8-K-2" style="edgeStyle=entityRelationEdgeStyle;fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="SIfebS9hRYbrdG8KM8-K-28" value="">
+          <mxGeometry height="100" relative="1" width="100" as="geometry">
+            <mxPoint x="380" y="570" as="sourcePoint" />
+            <mxPoint x="480" y="470" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SIfebS9hRYbrdG8KM8-K-71" edge="1" parent="1" source="SIfebS9hRYbrdG8KM8-K-56" style="edgeStyle=orthogonalEdgeStyle;fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;rounded=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;curved=0;" target="SIfebS9hRYbrdG8KM8-K-31" value="">
+          <mxGeometry height="100" relative="1" width="100" as="geometry">
+            <Array as="points">
+              <mxPoint x="460" y="365" />
+              <mxPoint x="460" y="190" />
+            </Array>
+            <mxPoint x="510" y="500" as="sourcePoint" />
+            <mxPoint x="620" y="510" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="QM5vwp1XGLutqFXWjWyu" name="Page-2">
+    <mxGraphModel dx="1770" dy="997" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="UTjSMQNtOv-28fNp74Oc-1" parent="1" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#000000;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="340" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="UTjSMQNtOv-28fNp74Oc-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=default;strokeColor=default;fontStyle=1;fontSize=14;arcSize=20;" value="new" vertex="1">
+          <mxGeometry height="60" width="150" x="280" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="UTjSMQNtOv-28fNp74Oc-3" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=10;fontColor=#555555;" value="Imported, but not yet reviewed" vertex="1">
+          <mxGeometry height="30" width="210" x="250" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="UTjSMQNtOv-28fNp74Oc-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=default;strokeColor=default;fontStyle=1;fontSize=14;arcSize=20;" value="reviewed" vertex="1">
+          <mxGeometry height="60" width="150" x="160" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="UTjSMQNtOv-28fNp74Oc-5" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=10;fontColor=#555555;" value="Label and notes assigned by reviewer" vertex="1">
+          <mxGeometry height="30" width="190" x="140" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="UTjSMQNtOv-28fNp74Oc-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=default;strokeColor=default;fontStyle=1;fontSize=13;arcSize=20;" value="needs_second_review" vertex="1">
+          <mxGeometry height="60" width="200" x="530" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="UTjSMQNtOv-28fNp74Oc-7" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=10;fontColor=#555555;" value="Flagged for second review" vertex="1">
+          <mxGeometry height="30" width="140" x="560" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="UTjSMQNtOv-28fNp74Oc-8" edge="1" parent="1" source="UTjSMQNtOv-28fNp74Oc-1" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=11;fontColor=#333333;" target="UTjSMQNtOv-28fNp74Oc-2" value="Імпорт CSV (FR-1)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="UTjSMQNtOv-28fNp74Oc-9" edge="1" parent="1" source="UTjSMQNtOv-28fNp74Oc-2" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=11;fontColor=#333333;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;rounded=0;curved=0;" target="UTjSMQNtOv-28fNp74Oc-4" value="Assign label &amp;amp; save (FR-3)">
+          <mxGeometry relative="1" x="0.4146" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="235" y="250" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="UTjSMQNtOv-28fNp74Oc-10" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=11;fontColor=#333333;entryX=0.5;entryY=0;entryDx=0;entryDy=0;rounded=0;curved=0;" target="UTjSMQNtOv-28fNp74Oc-6" value="Mark for second review">
+          <mxGeometry relative="1" x="0.6667" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="630" y="250" />
+            </Array>
+            <mxPoint x="430" y="250" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="UTjSMQNtOv-28fNp74Oc-11" edge="1" parent="1" source="UTjSMQNtOv-28fNp74Oc-4" style="html=1;fontSize=11;fontColor=#333333;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" target="UTjSMQNtOv-28fNp74Oc-6" value="Request second opinion">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="510" y="530" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="UTjSMQNtOv-28fNp74Oc-12" edge="1" parent="1" source="UTjSMQNtOv-28fNp74Oc-6" style="html=1;fontSize=11;fontColor=#333333;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" target="UTjSMQNtOv-28fNp74Oc-4" value="Second review completed">
+          <mxGeometry relative="1" x="0.0045" y="2" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="550" y="535" as="sourcePoint" />
+            <mxPoint x="310" y="590" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="UTjSMQNtOv-28fNp74Oc-13" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#666666;fillColor=#f5f5f5;strokeColor=#cccccc;rounded=1;" value="&lt;b data-path-to-node=&quot;2,0&quot; data-index-in-node=&quot;2&quot;&gt;Note:&lt;/b&gt; &lt;code data-path-to-node=&quot;2,0&quot; data-index-in-node=&quot;8&quot;&gt;reviewed_at&lt;/code&gt; timestamp is set upon the first exit from the &lt;b data-path-to-node=&quot;2,0&quot; data-index-in-node=&quot;66&quot;&gt;&lt;code data-path-to-node=&quot;2,0&quot; data-index-in-node=&quot;66&quot;&gt;new&lt;/code&gt;&lt;/b&gt; state&amp;nbsp;&lt;div&gt;(any outgoing transition triggers the timestamp).&lt;/div&gt;" vertex="1">
+          <mxGeometry height="50" width="350" x="250" y="500" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
