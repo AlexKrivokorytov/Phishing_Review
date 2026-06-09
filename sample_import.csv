@@ -1,0 +1,13 @@
+url_or_email,source,date_collected
+https://paypal-verify-secure.com/login,email_spam,2026-06-01
+support@security-alert-chase.com,phish_tank,2026-06-02
+http://google.com,manual,2026-06-03
+https://github.com/login,manual,2026-06-03
+http://192.168.1.105/bank-update/index.html,honeypot,2026-06-04
+secure-update-alert@netflix-signin.net,email_spam,2026-06-04
+invalid-url-example,honeypot,2026-06-05
+http://short.url/xYz12,sms_phish,2026-06-05
+billing@amazon-support-desk.co.uk,email_spam,2026-06-06
+https://microsoft-office365-reactivate.info/auth,phish_tank,2026-06-07
+not_an_email_or_url,manual,2026-06-07
+http://ebank-chase-update.info/login.php,sms_phish,2026-06-08
