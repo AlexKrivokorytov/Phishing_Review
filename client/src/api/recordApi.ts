@@ -65,3 +65,24 @@ export async function importCsv(file: File): Promise<ImportResult> {
   }
   return response.json();
 }
+
+export async function exportRecordsJson(): Promise<void> {
+  const response = await fetch(`${BASE_URL}/api/records`);
+  if (!response.ok) {
+    throw new Error(`Export failed: ${response.statusText}`);
+  }
+
+  const data: unknown = await response.json();
+  const blob = new Blob(
+    [JSON.stringify(data, null, 2)],
+    { type: 'application/json' }
+  );
+
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = `phishguard-export-${new Date().toISOString().slice(0, 10)}.json`;
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
+

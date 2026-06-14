@@ -3,12 +3,12 @@ import path from 'path';
 
 const isTest = process.env.NODE_ENV === 'test';
 const dbPath = isTest ? ':memory:' : path.resolve(__dirname, '../../database.db');
-const db = new Database(dbPath, { verbose: isTest ? undefined : console.log }); 
+const db = new Database(dbPath);
 
 db.pragma('foreign_keys = ON');
 
 export function initDB() {
-  const createTables = db.transaction(() => {
+  const setup = db.transaction(() => {
     db.prepare(`
       CREATE TABLE IF NOT EXISTS records (
         id TEXT PRIMARY KEY,
@@ -40,14 +40,13 @@ export function initDB() {
       )
     `).run();
 
+    // FTS5 content table backed by records; content_rowid links to the implicit rowid
     db.prepare(`
       CREATE VIRTUAL TABLE IF NOT EXISTS records_fts
       USING fts5(url_or_email, notes, content=records, content_rowid=rowid)
     `).run();
 
-    db.prepare(
-      `INSERT INTO records_fts(records_fts) VALUES('rebuild')`
-    ).run();
+    db.prepare(`INSERT INTO records_fts(records_fts) VALUES('rebuild')`).run();
 
     db.prepare(`
       CREATE TRIGGER IF NOT EXISTS records_ai AFTER INSERT ON records BEGIN
@@ -72,22 +71,21 @@ export function initDB() {
       END
     `).run();
 
-
     const insertTag = db.prepare(`INSERT OR IGNORE INTO tags (name) VALUES (?)`);
     const initialTags = [
-      'suspicious_domain', 
-      'credential_form', 
-      'url_shortener', 
-      'brand_impersonation', 
-      'suspicious_attachment_reference'
+      'suspicious_domain',
+      'credential_form',
+      'url_shortener',
+      'brand_impersonation',
+      'suspicious_attachment_reference',
     ];
-    
     for (const tag of initialTags) {
       insertTag.run(tag);
     }
   });
 
-  createTables();
-  console.log('Database initialized successfully.');
+  setup();
+  console.log('db ready');
 }
+
 export default db;

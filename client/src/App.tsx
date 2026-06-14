@@ -3,7 +3,7 @@ import { useRecords } from './hooks/useRecords';
 import { StatsBar } from './components/StatsBar';
 import { RecordTable } from './components/RecordTable';
 import { DetailPanel } from './components/DetailPanel';
-import { importCsv, updateRecord } from './api/recordApi';
+import { importCsv, updateRecord, exportRecordsJson } from './api/recordApi';
 import type { Record, Tag, UpdateRecordPayload } from './types/record';
 import './App.css';
 
@@ -21,6 +21,8 @@ function App() {
   const [selectedRecord, setSelectedRecord] = useState<Record | null>(null);
   const [saving, setSaving] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
+  const [exportError, setExportError] = useState<string | null>(null);
+
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -54,6 +56,16 @@ function App() {
     }
   };
 
+  const handleExport = async () => {
+    setExportError(null);
+    try {
+      await exportRecordsJson();
+    } catch (err: unknown) {
+      setExportError(err instanceof Error ? err.message : String(err));
+    }
+};
+
+
   return (
     <div className="app">
       <header className="app-header">
@@ -80,6 +92,11 @@ function App() {
               {importError}
             </span>
           )}
+          {exportError && (
+            <span role="alert" style={{ color: 'var(--label-phishing)', fontSize: '12px' }}>
+              {exportError}
+            </span>
+          )}
 
           <input
             ref={fileInputRef}
@@ -97,6 +114,16 @@ function App() {
           >
             Import CSV
           </button>
+
+          <button
+            id="export-json-btn"
+            className="btn-primary"
+            onClick={handleExport}
+            style={{ cursor: 'pointer'}}
+          >
+            Export JSON
+          </button>
+
         </div>
       </header>
 

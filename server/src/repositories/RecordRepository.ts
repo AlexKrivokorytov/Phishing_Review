@@ -1,22 +1,9 @@
 import type { Database } from 'better-sqlite3';
-import type {
-  Record,
-  UpdateRecordDto,
-  RecordFilters,
-} from '../types/record.types';
+import type { Record, UpdateRecordDto, RecordFilters } from '../types/record.types';
 
-/**
- * Repository for managing records table operations.
- */
 export class RecordRepository {
   constructor(private readonly db: Database) {}
 
-  /**
-   * Fetches records based on filters.
-   *
-   * @param filters - Filtering options.
-   * @returns List of records.
-   */
   public findAll(filters: RecordFilters = {}): Record[] {
     let query = 'SELECT * FROM records';
     const conditions: string[] = [];
@@ -34,91 +21,45 @@ export class RecordRepository {
       params.push(ftsQuery);
     }
 
-
     if (conditions.length > 0) {
       query += ' WHERE ' + conditions.join(' AND ');
     }
 
     query += ' ORDER BY imported_at DESC';
-
-    const stmt = this.db.prepare(query);
-    return stmt.all(...params) as Record[];
+    return this.db.prepare(query).all(...params) as Record[];
   }
 
-  /**
-   * Finds a single record by its ID.
-   *
-   * @param id - Record UUID.
-   * @returns Found record or undefined.
-   */
   public findById(id: string): Record | undefined {
-    const stmt = this.db.prepare('SELECT * FROM records WHERE id = ?');
-    return stmt.get(id) as Record | undefined;
+    return this.db.prepare('SELECT * FROM records WHERE id = ?').get(id) as Record | undefined;
   }
 
-  /**
-   * Inserts a new record, skipping duplicate url_or_emails.
-   *
-   * @param record - Record to insert.
-   * @returns Affected row count.
-   */
+  /** ON CONFLICT DO NOTHING skips duplicates silently and returns 0 changes. */
   public insert(record: Record): number {
-    const stmt = this.db.prepare(`
+    return this.db.prepare(`
       INSERT INTO records (id, url_or_email, source, date_collected, label, status, notes, imported_at, reviewed_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(url_or_email) DO NOTHING
-    `);
-    const result = stmt.run(
-      record.id,
-      record.url_or_email,
-      record.source,
-      record.date_collected,
-      record.label,
-      record.status,
-      record.notes,
-      record.imported_at,
-      record.reviewed_at
-    );
-    return result.changes;
+    `).run(
+      record.id, record.url_or_email, record.source, record.date_collected,
+      record.label, record.status, record.notes, record.imported_at, record.reviewed_at,
+    ).changes;
   }
 
-  /**
-   * Updates fields of a record. Automatically tracks the review timestamp when status updates.
-   *
-   * @param id - Record UUID.
-   * @param dto - Data fields to update.
-   * @returns Affected row count.
-   */
+  /** Sets reviewed_at when a record leaves 'new' status for the first time. */
   public update(id: string, dto: UpdateRecordDto): number {
     const current = this.findById(id);
-    if (!current) {
-      return 0;
-    }
+    if (!current) return 0;
 
     const updates: string[] = [];
     const params: unknown[] = [];
 
-    let isTransitioningFromNew = false;
-    if (dto.status && current.status === 'new' && dto.status !== 'new') {
-      isTransitioningFromNew = true;
-    }
+    const leavingNew = dto.status && current.status === 'new' && dto.status !== 'new';
 
-    if (dto.label !== undefined) {
-      updates.push('label = ?');
-      params.push(dto.label);
-    }
+    if (dto.label !== undefined) { updates.push('label = ?'); params.push(dto.label); }
+    if (dto.status !== undefined) { updates.push('status = ?'); params.push(dto.status); }
+    if (dto.notes !== undefined) { updates.push('notes = ?'); params.push(dto.notes); }
 
-    if (dto.status !== undefined) {
-      updates.push('status = ?');
-      params.push(dto.status);
-    }
-
-    if (dto.notes !== undefined) {
-      updates.push('notes = ?');
-      params.push(dto.notes);
-    }
-
-    if (isTransitioningFromNew) {
+    if (leavingNew) {
       updates.push('reviewed_at = ?');
       params.push(new Date().toISOString());
     } else if (dto.status === 'new') {
@@ -126,32 +67,20 @@ export class RecordRepository {
       params.push(null);
     }
 
-    if (updates.length === 0) {
-      return 0;
-    }
+    if (updates.length === 0) return 0;
 
     params.push(id);
-    const stmt = this.db.prepare(`UPDATE records SET ${updates.join(', ')} WHERE id = ?`);
-    const result = stmt.run(...params);
-    return result.changes;
+    return this.db.prepare(`UPDATE records SET ${updates.join(', ')} WHERE id = ?`).run(...params).changes;
   }
 
-  /**
-   * Retrieves summary counts for records.
-   *
-   * @returns Object with counts.
-   */
   public getCounts(): { total: number; new: number; reviewed: number; phishing: number } {
-    const total = (this.db.prepare('SELECT COUNT(*) as cnt FROM records').get() as { cnt: number }).cnt;
-    const newCount = (this.db.prepare("SELECT COUNT(*) as cnt FROM records WHERE status = 'new'").get() as { cnt: number }).cnt;
-    const reviewedCount = (this.db.prepare("SELECT COUNT(*) as cnt FROM records WHERE status = 'reviewed'").get() as { cnt: number }).cnt;
-    const phishingCount = (this.db.prepare("SELECT COUNT(*) as cnt FROM records WHERE label = 'phishing'").get() as { cnt: number }).cnt;
+    const n = (sql: string) => (this.db.prepare(sql).get() as { cnt: number }).cnt;
 
     return {
-      total,
-      new: newCount,
-      reviewed: reviewedCount,
-      phishing: phishingCount,
+      total:    n('SELECT COUNT(*) as cnt FROM records'),
+      new:      n("SELECT COUNT(*) as cnt FROM records WHERE status = 'new'"),
+      reviewed: n("SELECT COUNT(*) as cnt FROM records WHERE status = 'reviewed'"),
+      phishing: n("SELECT COUNT(*) as cnt FROM records WHERE label = 'phishing'"),
     };
   }
 }
