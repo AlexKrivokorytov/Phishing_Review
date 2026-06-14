@@ -40,6 +40,18 @@ export const RecordTable: React.FC<RecordTableProps> = ({
     return url.substring(0, maxLength) + '...';
   };
 
+  const PAGE_SIZE = 10;
+  const [currentPage, setCurrentPage] = React.useState(1);
+
+  // Reset to first page when search/filter changes or records update
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [filters, records.length]);
+
+  const totalPages = Math.ceil(records.length / PAGE_SIZE) || 1;
+  const startIndex = (currentPage - 1) * PAGE_SIZE;
+  const currentRecords = records.slice(startIndex, startIndex + PAGE_SIZE);
+
   return (
     <div className="record-table-container">
       <div className="filter-bar">
@@ -83,7 +95,7 @@ export const RecordTable: React.FC<RecordTableProps> = ({
                   <td colSpan={5} className="empty-state">No records found</td>
                 </tr>
               ) : (
-                records.map((record) => (
+                currentRecords.map((record) => (
                   <tr
                     key={record.id}
                     className={record.id === selectedId ? 'selected' : ''}
@@ -104,6 +116,30 @@ export const RecordTable: React.FC<RecordTableProps> = ({
           </table>
         )}
       </div>
+
+      {records.length > 0 && (
+        <div className="pagination" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', marginTop: '10px', padding: '10px 0' }}>
+          <button 
+            className="btn-secondary" 
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(p => p - 1)}
+            style={{ padding: '4px 12px', fontSize: '13px' }}
+          >
+            Prev
+          </button>
+          <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button 
+            className="btn-secondary" 
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage(p => p + 1)}
+            style={{ padding: '4px 12px', fontSize: '13px' }}
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 };

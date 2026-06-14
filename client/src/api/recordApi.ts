@@ -32,13 +32,7 @@ export async function fetchCounts(): Promise<RecordCounts> {
   return response.json();
 }
 
-export async function fetchRecordById(id: string): Promise<Record> {
-  const response = await fetch(`${BASE_URL}/api/records/${id}`);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch record: ${response.statusText}`);
-  }
-  return response.json();
-}
+
 
 export async function updateRecord(id: string, payload: UpdateRecordPayload): Promise<Record> {
   const response = await fetch(`${BASE_URL}/api/records/${id}`, {
@@ -52,36 +46,31 @@ export async function updateRecord(id: string, payload: UpdateRecordPayload): Pr
   return response.json();
 }
 
-export async function importCsv(file: File): Promise<ImportResult> {
+export async function importFile(file: File): Promise<ImportResult> {
   const formData = new FormData();
   formData.append('file', file);
 
-  const response = await fetch(`${BASE_URL}/api/import/csv`, {
+  const response = await fetch(`${BASE_URL}/api/import/file`, {
     method: 'POST',
     body: formData,
   });
   if (!response.ok) {
-    throw new Error(`Failed to import CSV: ${response.statusText}`);
+    throw new Error(`Failed to import file: ${response.statusText}`);
   }
   return response.json();
 }
 
-export async function exportRecordsJson(): Promise<void> {
-  const response = await fetch(`${BASE_URL}/api/records`);
+export async function downloadExport(format: 'json' | 'csv'): Promise<void> {
+  const response = await fetch(`${BASE_URL}/api/export/${format}`);
   if (!response.ok) {
     throw new Error(`Export failed: ${response.statusText}`);
   }
 
-  const data: unknown = await response.json();
-  const blob = new Blob(
-    [JSON.stringify(data, null, 2)],
-    { type: 'application/json' }
-  );
-
+  const blob = await response.blob();
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement('a');
   anchor.href = url;
-  anchor.download = `phishguard-export-${new Date().toISOString().slice(0, 10)}.json`;
+  anchor.download = `phishguard-export-${new Date().toISOString().slice(0, 10)}.${format}`;
   anchor.click();
   URL.revokeObjectURL(url);
 }

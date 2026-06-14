@@ -13,7 +13,7 @@ const importController = new ImportController(importService);
 
 const router = Router();
 
-router.post('/csv', upload.single('file'), (req, res, next) =>
+router.post('/file', upload.single('file'), (req, res, next) =>
   importController.uploadFile(req, res, next),
 );
 

@@ -7,8 +7,21 @@ export class ImportController {
 
     public async uploadFile(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const file = this.getValidatedFile(req);
-            const result = await this.importService.processCsvFile(file.path);
+            const file = req.file as Express.Multer.File;
+
+            if (!file) {
+                throw new Error('No file was uploaded.');
+            }
+
+            let result;
+            if (file.mimetype === 'text/csv' || file.originalname.endsWith('.csv')) {
+                result = await this.importService.processCsvFile(file.path);
+            } else if (file.mimetype === 'application/json' || file.originalname.endsWith('.json')) {
+                result = await this.importService.processJsonFile(file.path);
+            } else {
+                throw new Error('File must be a CSV or JSON.');
+            }
+
             res.status(200).json({
                 success: true,
                 imported: result.imported,
@@ -18,19 +31,5 @@ export class ImportController {
         } catch (error) {
             next(error);
         }
-    }
-
-    private getValidatedFile(req: Request): Express.Multer.File {
-        const file = req.file as Express.Multer.File;
-
-        if (!file) {
-            throw new Error('No file was uploaded.');
-        }
-
-        if (file.mimetype !== 'text/csv') {
-            throw new Error('File must be a CSV.');
-        }
-
-        return file;
     }
 }

@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "knip-deadcode": {
+      "source": "pproenca/dot-skills",
+      "sourceType": "github",
+      "skillPath": "skills/.experimental/knip-deadcode/SKILL.md",
+      "computedHash": "a46f6db533fe18245af1b857a56ec74fb9a0c03946d2a2736527242d11927967"
+    }
+  }
+}

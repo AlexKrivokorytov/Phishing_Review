@@ -3,7 +3,7 @@ import { useRecords } from './hooks/useRecords';
 import { StatsBar } from './components/StatsBar';
 import { RecordTable } from './components/RecordTable';
 import { DetailPanel } from './components/DetailPanel';
-import { importCsv, updateRecord, exportRecordsJson } from './api/recordApi';
+import { importFile, updateRecord, downloadExport } from './api/recordApi';
 import type { Record, Tag, UpdateRecordPayload } from './types/record';
 import './App.css';
 
@@ -33,7 +33,7 @@ function App() {
     setImportError(null);
     setImporting(true);
     try {
-      await importCsv(file);
+      await importFile(file);
       refresh();
     } catch (err: unknown) {
       setImportError(err instanceof Error ? err.message : String(err));
@@ -58,10 +58,10 @@ function App() {
     }
   };
 
-  const handleExport = async () => {
+  const handleExport = async (format: 'json' | 'csv') => {
     setExportError(null);
     try {
-      await exportRecordsJson();
+      await downloadExport(format);
     } catch (err: unknown) {
       setExportError(err instanceof Error ? err.message : String(err));
     }
@@ -101,30 +101,39 @@ function App() {
 
           <input
             ref={fileInputRef}
-            id="csv-file-input"
+            id="file-input"
             type="file"
-            accept=".csv"
+            accept=".csv,.json"
             style={{ display: 'none' }}
             onChange={handleFileChange}
           />
           <button
-            id="import-csv-btn"
+            id="import-btn"
             className="btn-primary"
             onClick={() => fileInputRef.current?.click()}
             disabled={importing}
             aria-busy={importing}
-            style={{ cursor: importing ? 'not-allowed' : 'pointer' }}
+            style={{ cursor: importing ? 'not-allowed' : 'pointer', marginRight: '8px' }}
           >
-            {importing ? 'Importing…' : 'Import CSV'}
+            {importing ? 'Importing…' : 'Import File'}
           </button>
 
           <button
             id="export-json-btn"
             className="btn-primary"
-            onClick={handleExport}
-            style={{ cursor: 'pointer'}}
+            onClick={() => handleExport('json')}
+            style={{ cursor: 'pointer', marginRight: '8px' }}
           >
             Export JSON
+          </button>
+
+          <button
+            id="export-csv-btn"
+            className="btn-primary"
+            onClick={() => handleExport('csv')}
+            style={{ cursor: 'pointer' }}
+          >
+            Export CSV
           </button>
 
         </div>
