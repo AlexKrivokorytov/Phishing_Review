@@ -152,21 +152,23 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
         <div className="detail-field detail-field--column">
           <span className="field-label">Evidence Tags</span>
           <div className="tags-checkbox-list" style={{ marginTop: '5px' }}>
-            {availableTags.map((tag) => (
+          {availableTags.map((tag) => (
               <label
                 key={tag.id}
+                htmlFor={`tag-cb-${tag.id}`}
                 className="tag-checkbox-item"
                 style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px', cursor: 'pointer' }}
               >
                 <input
                   type="checkbox"
-                  id={`tag-${tag.id}`}
+                  id={`tag-cb-${tag.id}`}
                   checked={selectedTagIds.includes(tag.id)}
                   onChange={() => handleTagToggle(tag.id)}
                 />
                 <span className="tag-name" style={{ fontSize: '0.9rem' }}>{tag.name}</span>
               </label>
             ))}
+
           </div>
         </div>
 

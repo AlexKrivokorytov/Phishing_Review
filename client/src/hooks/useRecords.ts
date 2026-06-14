@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { fetchRecords, fetchCounts } from '../api/recordApi';
 import type { Record, RecordCounts, RecordFilters } from '../types/record';
 
@@ -20,11 +20,24 @@ export function useRecords(): UseRecordsReturn {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState<RecordFilters>({ status: '', search: '' });
+  const [debouncedFilters, setDebouncedFilters] = useState<RecordFilters>(filters);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Debounce only the search field; status changes fire immediately
+  useEffect(() => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      setDebouncedFilters(filters);
+    }, 300);
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [filters]);
 
   const refresh = useCallback(() => {
     setLoading(true);
     setError(null);
-    Promise.all([fetchRecords(filters), fetchCounts()])
+    Promise.all([fetchRecords(debouncedFilters), fetchCounts()])
       .then(([recordsData, countsData]) => {
         setRecords(recordsData);
         setCounts(countsData);
@@ -35,7 +48,7 @@ export function useRecords(): UseRecordsReturn {
       .finally(() => {
         setLoading(false);
       });
-  }, [filters]);
+  }, [debouncedFilters]);
 
   useEffect(() => {
     refresh();

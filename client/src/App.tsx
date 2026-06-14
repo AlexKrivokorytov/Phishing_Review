@@ -20,9 +20,9 @@ function App() {
 
   const [selectedRecord, setSelectedRecord] = useState<Record | null>(null);
   const [saving, setSaving] = useState(false);
+  const [importing, setImporting] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
   const [exportError, setExportError] = useState<string | null>(null);
-
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -31,12 +31,14 @@ function App() {
     if (!file) return;
 
     setImportError(null);
+    setImporting(true);
     try {
       await importCsv(file);
       refresh();
     } catch (err: unknown) {
       setImportError(err instanceof Error ? err.message : String(err));
     } finally {
+      setImporting(false);
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
@@ -63,8 +65,7 @@ function App() {
     } catch (err: unknown) {
       setExportError(err instanceof Error ? err.message : String(err));
     }
-};
-
+  };
 
   return (
     <div className="app">
@@ -110,9 +111,11 @@ function App() {
             id="import-csv-btn"
             className="btn-primary"
             onClick={() => fileInputRef.current?.click()}
-            style={{ cursor: 'pointer' }}
+            disabled={importing}
+            aria-busy={importing}
+            style={{ cursor: importing ? 'not-allowed' : 'pointer' }}
           >
-            Import CSV
+            {importing ? 'Importing…' : 'Import CSV'}
           </button>
 
           <button
