@@ -40,6 +40,39 @@ export function initDB() {
       )
     `).run();
 
+    db.prepare(`
+      CREATE VIRTUAL TABLE IF NOT EXISTS records_fts
+      USING fts5(url_or_email, notes, content=records, content_rowid=rowid)
+    `).run();
+
+    db.prepare(
+      `INSERT INTO records_fts(records_fts) VALUES('rebuild')`
+    ).run();
+
+    db.prepare(`
+      CREATE TRIGGER IF NOT EXISTS records_ai AFTER INSERT ON records BEGIN
+        INSERT INTO records_fts(rowid, url_or_email, notes)
+        VALUES (new.rowid, new.url_or_email, new.notes);
+      END
+    `).run();
+
+    db.prepare(`
+      CREATE TRIGGER IF NOT EXISTS records_ad AFTER DELETE ON records BEGIN
+        INSERT INTO records_fts(records_fts, rowid, url_or_email, notes)
+        VALUES ('delete', old.rowid, old.url_or_email, old.notes);
+      END
+    `).run();
+
+    db.prepare(`
+      CREATE TRIGGER IF NOT EXISTS records_au AFTER UPDATE ON records BEGIN
+        INSERT INTO records_fts(records_fts, rowid, url_or_email, notes)
+        VALUES ('delete', old.rowid, old.url_or_email, old.notes);
+        INSERT INTO records_fts(rowid, url_or_email, notes)
+        VALUES (new.rowid, new.url_or_email, new.notes);
+      END
+    `).run();
+
+
     const insertTag = db.prepare(`INSERT OR IGNORE INTO tags (name) VALUES (?)`);
     const initialTags = [
       'suspicious_domain', 

@@ -56,13 +56,14 @@ describe('RecordRepository', () => {
     expect(records[0].status).toBe('new');
   });
 
-  it('findAll searches by url_or_email substring', () => {
-    repo.insert(makeRecord({ url_or_email: 'http://phish.com' }));
-    repo.insert(makeRecord({ url_or_email: 'http://benign.com' }));
-    const records = repo.findAll({ search: 'phish' });
-    expect(records).toHaveLength(1);
-    expect(records[0].url_or_email).toBe('http://phish.com');
+  it('findAll searches by url_or_email', () => {
+    repo.insert(makeRecord({ url_or_email: 'http://phish.example.com' }));
+    repo.insert(makeRecord({ url_or_email: 'http://benign.example.com' }));
+    const results = repo.findAll({ search: 'phish' });
+    expect(results).toHaveLength(1);
+    expect(results[0].url_or_email).toBe('http://phish.example.com');
   });
+
 
   it('findById returns the correct record', () => {
     const record = makeRecord();

@@ -28,10 +28,12 @@ export class RecordRepository {
     }
 
     if (filters.search) {
-      conditions.push('(url_or_email LIKE ? OR notes LIKE ?)');
-      const searchParam = `%${filters.search}%`;
-      params.push(searchParam, searchParam);
+      const terms = filters.search.trim().split(/\s+/);
+      const ftsQuery = terms.map((t) => `"${t}"`).join(' ');
+      conditions.push('rowid IN (SELECT rowid FROM records_fts WHERE records_fts MATCH ?)');
+      params.push(ftsQuery);
     }
+
 
     if (conditions.length > 0) {
       query += ' WHERE ' + conditions.join(' AND ');
