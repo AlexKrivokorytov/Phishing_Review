@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { TagRepository } from '../../src/repositories/TagRepository';
 import { RecordRepository } from '../../src/repositories/RecordRepository';
-import db, { initDB } from '../../src/db';
+import { DatabaseFactory } from '../../src/db';
 import { randomUUID } from 'crypto';
 
 process.env.NODE_ENV = 'test';
@@ -27,10 +27,10 @@ describe('TagRepository', () => {
   };
 
   beforeEach(() => {
-    initDB();
+    DatabaseFactory.resetConnection();
+    const db = DatabaseFactory.getConnection();
     tagRepo = new TagRepository(db);
     recordRepo = new RecordRepository(db);
-    db.prepare('DELETE FROM records').run();
   });
 
   it('findAll returns the seeded tags', () => {

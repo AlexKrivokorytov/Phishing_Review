@@ -3,26 +3,23 @@ import { useRecords } from './hooks/useRecords';
 import { StatsBar } from './components/StatsBar';
 import { RecordTable } from './components/RecordTable';
 import { DetailPanel } from './components/DetailPanel';
-import { importFile, updateRecord, downloadExport } from './api/recordApi';
+import { importFile, updateRecord, downloadExport, getTags } from './api/recordApi';
 import type { Record, Tag, UpdateRecordPayload } from './types/record';
 import './App.css';
-
-const AVAILABLE_TAGS: Tag[] = [
-  { id: 1, name: 'suspicious_domain' },
-  { id: 2, name: 'credential_form' },
-  { id: 3, name: 'url_shortener' },
-  { id: 4, name: 'brand_impersonation' },
-  { id: 5, name: 'suspicious_attachment_reference' },
-];
 
 function App() {
   const { records, counts, loading, error, refresh, filters, setFilters } = useRecords();
 
   const [selectedRecord, setSelectedRecord] = useState<Record | null>(null);
+  const [tags, setTags] = useState<Tag[]>([]);
   const [saving, setSaving] = useState(false);
   const [importing, setImporting] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
   const [exportError, setExportError] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    getTags().then(setTags).catch(console.error);
+  }, []);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -113,7 +110,7 @@ function App() {
             onClick={() => fileInputRef.current?.click()}
             disabled={importing}
             aria-busy={importing}
-            style={{ cursor: importing ? 'not-allowed' : 'pointer', marginRight: '8px' }}
+            style={{ cursor: importing ? 'not-allowed' : 'pointer' }}
           >
             {importing ? 'Importing…' : 'Import File'}
           </button>
@@ -122,7 +119,7 @@ function App() {
             id="export-json-btn"
             className="btn-primary"
             onClick={() => handleExport('json')}
-            style={{ cursor: 'pointer', marginRight: '8px' }}
+            style={{ cursor: 'pointer' }}
           >
             Export JSON
           </button>
@@ -159,12 +156,16 @@ function App() {
           />
         </section>
 
-        <section className="pane pane--right" aria-label="Record details">
+        <section
+          className={`pane pane--right ${selectedRecord ? 'pane--right--active' : ''}`}
+          aria-label="Record details"
+        >
           <DetailPanel
             record={selectedRecord}
-            availableTags={AVAILABLE_TAGS}
+            availableTags={tags}
             onSave={handleSave}
             saving={saving}
+            onClose={() => setSelectedRecord(null)}
           />
         </section>
       </main>

@@ -3,13 +3,15 @@ import fs from 'fs';
 import path from 'path';
 import { ImportService } from '../../src/services/ImportService';
 import { RecordRepository } from '../../src/repositories/RecordRepository';
-import db, { initDB } from '../../src/db';
+import { DatabaseFactory } from '../../src/db';
+import { CsvImportStrategy, JsonImportStrategy } from '../../src/services/strategies/import.strategies';
 
 process.env.NODE_ENV = 'test';
 
 describe('ImportService', () => {
   let recordRepo: RecordRepository;
   let importService: ImportService;
+  let db: any;
   const tempFiles: string[] = [];
 
   const createTempFile = (fileName: string, content: string): string => {
@@ -20,13 +22,14 @@ describe('ImportService', () => {
   };
 
   beforeEach(() => {
-    initDB();
+    DatabaseFactory.resetConnection();
+    db = DatabaseFactory.getConnection();
     recordRepo = new RecordRepository(db);
     importService = new ImportService(recordRepo);
   });
 
   afterEach(() => {
-    db.prepare('DELETE FROM records').run();
+    DatabaseFactory.resetConnection();
     for (const file of tempFiles) {
       if (fs.existsSync(file)) {
         fs.unlinkSync(file);
@@ -42,7 +45,7 @@ describe('ImportService', () => {
       'user@phish-bank.com,csv_import,2026-03-20\n';
 
     const filePath = createTempFile('test.csv', csvContent);
-    const result = await importService.processCsvFile(filePath);
+    const result = await importService.processFile(filePath, new CsvImportStrategy());
     expect(result.imported).toBe(2);
     expect(result.skipped).toBe(0);
   });
@@ -52,7 +55,7 @@ describe('ImportService', () => {
       'url_or_email,source,date_collected\n' +
       'invalid-url,manual,2026-03-15\n';
     const filePath = createTempFile('invalid-url-test.csv', csvContent);
-    const result = await importService.processCsvFile(filePath);
+    const result = await importService.processFile(filePath, new CsvImportStrategy());
     expect(result.imported).toBe(1);
     expect(result.skipped).toBe(0);
     const record = db.prepare('SELECT * FROM records').get() as { url_or_email: string, notes: string };
@@ -66,7 +69,7 @@ describe('ImportService', () => {
       'http://example-login.biz/secure,manual,2026-03-15\n' +
       'http://example-login.biz/secure,csv_import,2026-03-20\n';
     const filePath = createTempFile('duplicate-test.csv', csvContent);
-    const result = await importService.processCsvFile(filePath);
+    const result = await importService.processFile(filePath, new CsvImportStrategy());
     expect(result.imported).toBe(1);
     expect(result.skipped).toBe(1);
   });
@@ -77,7 +80,7 @@ describe('ImportService', () => {
       'http://example-login.biz/secure,manual,2026-03-15\n' +
       ',,2026-03-20\n';
     const filePath = createTempFile('missing-values-test.csv', csvContent);
-    const result = await importService.processCsvFile(filePath);
+    const result = await importService.processFile(filePath, new CsvImportStrategy());
     expect(result.imported).toBe(1);
     expect(result.skipped).toBe(0);
     const record = db.prepare('SELECT * FROM records').get() as { url_or_email: string, notes: string };
@@ -92,7 +95,7 @@ describe('ImportService', () => {
     ]);
 
     const filePath = createTempFile('test.json', jsonContent);
-    const result = await importService.processJsonFile(filePath);
+    const result = await importService.processFile(filePath, new JsonImportStrategy());
     expect(result.imported).toBe(2);
     expect(result.skipped).toBe(0);
   });
@@ -102,7 +105,7 @@ describe('ImportService', () => {
       { url_or_email: 'invalid-url', source: 'manual', date_collected: '2026-03-15' }
     ]);
     const filePath = createTempFile('invalid-url-test.json', jsonContent);
-    const result = await importService.processJsonFile(filePath);
+    const result = await importService.processFile(filePath, new JsonImportStrategy());
     expect(result.imported).toBe(1);
     expect(result.skipped).toBe(0);
     const record = db.prepare('SELECT * FROM records').get() as { url_or_email: string, notes: string };
@@ -113,6 +116,6 @@ describe('ImportService', () => {
   test('throws error for non-array json', async () => {
     const jsonContent = JSON.stringify({ url_or_email: 'http://example.com' });
     const filePath = createTempFile('non-array.json', jsonContent);
-    await expect(importService.processJsonFile(filePath)).rejects.toThrow('JSON file must contain an array of records.');
+    await expect(importService.processFile(filePath, new JsonImportStrategy())).rejects.toThrow('JSON file must contain an array of records.');
   });
 });

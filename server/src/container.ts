@@ -8,8 +8,10 @@ import { ImportService } from './services/ImportService';
 import { RecordController } from './controllers/RecordController';
 import { ExportController } from './controllers/ExportController';
 import { ImportController } from './controllers/ImportController';
-import db from './db';
+import { TagController } from './controllers/TagController';
+import { DatabaseFactory } from './db';
 
+const db = DatabaseFactory.getConnection();
 const recordRepo = new RecordRepository(db);
 const tagRepo = new TagRepository(db);
 
@@ -20,3 +22,4 @@ const importService = new ImportService(recordRepo);
 export const recordController = new RecordController(recordService);
 export const exportController = new ExportController(exportService);
 export const importController = new ImportController(importService);
+export const tagController = new TagController(tagRepo);

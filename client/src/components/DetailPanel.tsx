@@ -6,6 +6,7 @@ interface DetailPanelProps {
   availableTags: Tag[];
   onSave: (id: string, payload: UpdateRecordPayload) => Promise<void>;
   saving: boolean;
+  onClose?: () => void;
 }
 
 const LABEL_OPTIONS: Array<{ value: Label | ''; label: string }> = [
@@ -27,6 +28,7 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
   availableTags,
   onSave,
   saving,
+  onClose,
 }) => {
   const [label, setLabel] = useState<Label | ''>('');
   const [status, setStatus] = useState<Status>('new');
@@ -74,6 +76,13 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
 
   return (
     <div className="detail-panel">
+      {onClose && (
+        <div className="detail-panel-header">
+          <button className="btn-close" onClick={onClose} aria-label="Close details">
+            ✖ Close
+          </button>
+        </div>
+      )}
       <section className="detail-section">
         <h2 className="detail-title">Record Details</h2>
 

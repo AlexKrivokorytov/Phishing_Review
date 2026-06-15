@@ -16,7 +16,7 @@ export class RecordRepository {
 
     if (filters.search) {
       const terms = filters.search.trim().split(/\s+/);
-      const ftsQuery = terms.map((t) => `"${t}"`).join(' ');
+      const ftsQuery = terms.map((t) => `"${t}"*`).join(' ');
       conditions.push('rowid IN (SELECT rowid FROM records_fts WHERE records_fts MATCH ?)');
       params.push(ftsQuery);
     }
@@ -45,7 +45,7 @@ export class RecordRepository {
 
     if (filters.search) {
       const terms = filters.search.trim().split(/\s+/);
-      const ftsQuery = terms.map((t) => `"${t}"`).join(' ');
+      const ftsQuery = terms.map((t) => `"${t}"*`).join(' ');
       conditions.push('r.rowid IN (SELECT rowid FROM records_fts WHERE records_fts MATCH ?)');
       params.push(ftsQuery);
     }

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ExportService } from '../../src/services/ExportService';
+import { JsonExportStrategy, CsvExportStrategy } from '../../src/services/strategies/export.strategies';
 import type { RecordService } from '../../src/services/RecordService';
 import type { RecordWithTags } from '../../src/types/record.types';
 
@@ -31,9 +32,9 @@ describe('ExportService', () => {
   });
 
   describe('exportJson', () => {
-    it('returns a valid JSON string of records', () => {
-      const result = exportService.exportJson();
-      const parsed = JSON.parse(result);
+    it('export(JsonExportStrategy) returns valid JSON array', () => {
+      const jsonStr = exportService.export({}, new JsonExportStrategy());
+      const parsed = JSON.parse(jsonStr);
       expect(Array.isArray(parsed)).toBe(true);
       expect(parsed).toHaveLength(1);
       expect(parsed[0].id).toBe('test-id-1');
@@ -41,15 +42,15 @@ describe('ExportService', () => {
     });
 
     it('passes filters to RecordService', () => {
-      exportService.exportJson({ status: 'new' });
+      exportService.export({ status: 'new' }, new JsonExportStrategy());
       expect(mockRecordService.getAll).toHaveBeenCalledWith({ status: 'new' });
     });
   });
 
   describe('exportCsv', () => {
-    it('returns a valid CSV string with headers', () => {
-      const result = exportService.exportCsv();
-      const lines = result.trim().split('\n');
+    it('export(CsvExportStrategy) returns valid CSV string with headers', () => {
+      const csvStr = exportService.export({}, new CsvExportStrategy());
+      const lines = csvStr.trim().split('\n');
       expect(lines.length).toBeGreaterThan(1);
       
       const header = lines[0];
@@ -58,15 +59,14 @@ describe('ExportService', () => {
       expect(header).toContain('label');
     });
 
-    it('flattens tags into a semicolon-separated string', () => {
-      const result = exportService.exportCsv();
-      const lines = result.trim().split('\n');
-      const dataLine = lines[1];
+    it('export(CsvExportStrategy) formats tags correctly', () => {
+      const csvStr = exportService.export({}, new CsvExportStrategy());
+      const dataLine = csvStr.trim().split('\n')[1];
       expect(dataLine).toContain('brand_impersonation; credential_form');
     });
 
     it('passes filters to RecordService', () => {
-      exportService.exportCsv({ search: 'example' });
+      exportService.export({ search: 'example' }, new CsvExportStrategy());
       expect(mockRecordService.getAll).toHaveBeenCalledWith({ search: 'example' });
     });
   });

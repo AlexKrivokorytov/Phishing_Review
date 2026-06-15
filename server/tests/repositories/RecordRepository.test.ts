@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { RecordRepository } from '../../src/repositories/RecordRepository';
-import db, { initDB } from '../../src/db';
+import { DatabaseFactory } from '../../src/db';
 import type { Record } from '../../src/types/record.types';
 import { randomUUID } from 'crypto';
 
@@ -23,9 +23,9 @@ describe('RecordRepository', () => {
   let repo: RecordRepository;
 
   beforeEach(() => {
-    initDB();
+    DatabaseFactory.resetConnection();
+    const db = DatabaseFactory.getConnection();
     repo = new RecordRepository(db);
-    db.prepare('DELETE FROM records').run();
   });
 
   it('inserts a record and returns 1 change', () => {

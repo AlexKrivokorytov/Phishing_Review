@@ -86,8 +86,8 @@ export const RecordTable: React.FC<RecordTableProps> = ({
                 <th>URL / Email</th>
                 <th>Status</th>
                 <th>Label</th>
-                <th>Source</th>
-                <th>Date</th>
+                <th className="hide-on-mobile">Source</th>
+                <th className="hide-on-mobile">Date</th>
               </tr>
             </thead>
             <tbody>
@@ -108,8 +108,8 @@ export const RecordTable: React.FC<RecordTableProps> = ({
                     </td>
                     <td><StatusBadge status={record.status} /></td>
                     <td><LabelBadge label={record.label} /></td>
-                    <td>{record.source}</td>
-                    <td style={{ whiteSpace: 'nowrap' }}>{record.date_collected}</td>
+                    <td className="hide-on-mobile">{record.source}</td>
+                    <td className="hide-on-mobile" style={{ whiteSpace: 'nowrap' }}>{record.date_collected}</td>
                   </tr>
                 ))
               )}

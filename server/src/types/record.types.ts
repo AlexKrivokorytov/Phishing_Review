@@ -8,7 +8,7 @@
 // ---------------------------------------------------------------------------
 
 /** The label a reviewer assigns to a record after analysis. */
-export type Label = 'benign' | 'suspicious' | 'phishing' | 'malware';
+type Label = 'benign' | 'suspicious' | 'phishing' | 'malware';
 
 /** The workflow state of a record. */
 export type Status = 'new' | 'reviewed' | 'needs_second_review';

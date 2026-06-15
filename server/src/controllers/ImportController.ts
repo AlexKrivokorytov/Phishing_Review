@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import "multer";
 import { ImportService } from "../services/ImportService";
+import { CsvImportStrategy, JsonImportStrategy } from '../services/strategies/import.strategies';
 
 export class ImportController {
     constructor(private importService: ImportService) { }
@@ -13,14 +14,16 @@ export class ImportController {
                 throw new Error('No file was uploaded.');
             }
 
-            let result;
+            let strategy;
             if (file.mimetype === 'text/csv' || file.originalname.endsWith('.csv')) {
-                result = await this.importService.processCsvFile(file.path);
+                strategy = new CsvImportStrategy();
             } else if (file.mimetype === 'application/json' || file.originalname.endsWith('.json')) {
-                result = await this.importService.processJsonFile(file.path);
+                strategy = new JsonImportStrategy();
             } else {
                 throw new Error('File must be a CSV or JSON.');
             }
+
+            const result = await this.importService.processFile(file.path, strategy);
 
             res.status(200).json({
                 success: true,

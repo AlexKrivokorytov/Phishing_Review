@@ -28,7 +28,7 @@ export function useRecords(): UseRecordsReturn {
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
       setDebouncedFilters(filters);
-    }, 300);
+    }, 150);
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };

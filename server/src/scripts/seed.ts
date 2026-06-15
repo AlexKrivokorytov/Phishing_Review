@@ -1,9 +1,10 @@
-import crypto from 'crypto';
-import { initDB } from '../db';
-import db from '../db';
+import { randomUUID } from 'crypto';
+import { DatabaseFactory } from '../db';
 import { RecordRepository } from '../repositories/RecordRepository';
 import { TagRepository } from '../repositories/TagRepository';
 import type { Record } from '../types/record.types';
+
+const db = DatabaseFactory.getConnection();
 
 type SeedRow = Pick<Record, 'url_or_email' | 'source' | 'date_collected'> & {
   label: Record['label'];
@@ -46,8 +47,7 @@ const SEED_RECORDS: SeedRow[] = [
 ];
 
 function run() {
-  initDB();
-
+  console.log('Seeding fake data...');
   const recordRepo = new RecordRepository(db);
   const tagRepo = new TagRepository(db);
   const allTags = tagRepo.findAll();

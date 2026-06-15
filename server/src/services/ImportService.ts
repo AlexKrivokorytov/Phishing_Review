@@ -1,76 +1,13 @@
-import fs from 'fs';
-import { parse } from 'csv-parse';
 import crypto from 'crypto';
 import type { RecordRepository } from '../repositories/RecordRepository';
-
-interface CsvRow {
-  url_or_email: string;
-  source: string;
-  date_collected: string;
-}
+import type { IImportStrategy, CsvRow } from './strategies/import.strategies';
 
 export class ImportService {
   constructor(private readonly recordRepo: RecordRepository) {}
 
-  public async processCsvFile(
-    filePath: string,
-  ): Promise<{ imported: number; skipped: number }> {
-    return new Promise((resolve, reject) => {
-      const parsedRows: CsvRow[] = [];
-
-      fs.createReadStream(filePath)
-        .pipe(parse({ columns: true, trim: true, skip_empty_lines: true }))
-        .on('data', (row: CsvRow) => {
-          if (row.url_or_email && row.url_or_email.trim() !== '' && row.source) {
-            parsedRows.push(row);
-          }
-        })
-        .on('end', () => {
-          try {
-            const stats = this.processRows(parsedRows);
-            fs.unlinkSync(filePath);
-            resolve(stats);
-          } catch (error) {
-            reject(error);
-          }
-        })
-        .on('error', (error) => {
-          reject(error);
-        });
-    });
-  }
-
-  public async processJsonFile(
-    filePath: string,
-  ): Promise<{ imported: number; skipped: number }> {
-    try {
-      const fileContent = fs.readFileSync(filePath, 'utf-8');
-      const data = JSON.parse(fileContent);
-      
-      if (!Array.isArray(data)) {
-        throw new Error('JSON file must contain an array of records.');
-      }
-
-      const parsedRows: CsvRow[] = [];
-      for (const item of data) {
-        if (item && item.url_or_email && item.url_or_email.trim() !== '' && item.source) {
-          parsedRows.push({
-            url_or_email: item.url_or_email,
-            source: item.source,
-            date_collected: item.date_collected || new Date().toISOString()
-          });
-        }
-      }
-
-      const stats = this.processRows(parsedRows);
-      fs.unlinkSync(filePath);
-      return stats;
-    } catch (error) {
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-      }
-      throw error;
-    }
+  public async processFile(filePath: string, strategy: IImportStrategy): Promise<{ imported: number; skipped: number }> {
+    const rows = await strategy.parse(filePath);
+    return this.processRows(rows);
   }
 
   private processRows(rows: CsvRow[]): { imported: number; skipped: number } {
@@ -79,7 +16,6 @@ export class ImportService {
 
     for (const row of rows) {
       const isValid = this.isValidUrlOrEmail(row.url_or_email);
-
       const changes = this.recordRepo.insert({
         id: crypto.randomUUID(),
         url_or_email: row.url_or_email,
@@ -92,11 +28,8 @@ export class ImportService {
         reviewed_at: null,
       });
 
-      if (changes > 0) {
-        importedCount++;
-      } else {
-        skippedCount++;
-      }
+      if (changes > 0) importedCount++;
+      else skippedCount++;
     }
 
     return { imported: importedCount, skipped: skippedCount };
@@ -112,3 +45,4 @@ export class ImportService {
     }
   }
 }
+

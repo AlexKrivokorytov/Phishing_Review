@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import type { ExportService } from '../services/ExportService';
+import { ExportService } from '../services/ExportService';
+import { JsonExportStrategy, CsvExportStrategy } from '../services/strategies/export.strategies';
 import type { RecordFilters, Status } from '../types/record.types';
 
 export class ExportController {
@@ -8,10 +9,11 @@ export class ExportController {
   public getJson(req: Request, res: Response, next: NextFunction): void {
     try {
       const filters = this.parseFilters(req);
-      const jsonStr = this.exportService.exportJson(filters);
+      const strategy = new JsonExportStrategy();
+      const jsonStr = this.exportService.export(filters, strategy);
       
-      res.setHeader('Content-Type', 'application/json');
-      res.setHeader('Content-Disposition', `attachment; filename="phishguard-export-${this.getDateString()}.json"`);
+      res.setHeader('Content-Type', strategy.getContentType());
+      res.setHeader('Content-Disposition', `attachment; filename="phishguard-export-${this.getDateString()}.${strategy.getFileExtension()}"`);
       res.status(200).send(jsonStr);
     } catch (error) {
       next(error);
@@ -21,10 +23,11 @@ export class ExportController {
   public getCsv(req: Request, res: Response, next: NextFunction): void {
     try {
       const filters = this.parseFilters(req);
-      const csvStr = this.exportService.exportCsv(filters);
+      const strategy = new CsvExportStrategy();
+      const csvStr = this.exportService.export(filters, strategy);
       
-      res.setHeader('Content-Type', 'text/csv');
-      res.setHeader('Content-Disposition', `attachment; filename="phishguard-export-${this.getDateString()}.csv"`);
+      res.setHeader('Content-Type', strategy.getContentType());
+      res.setHeader('Content-Disposition', `attachment; filename="phishguard-export-${this.getDateString()}.${strategy.getFileExtension()}"`);
       res.status(200).send(csvStr);
     } catch (error) {
       next(error);
@@ -46,3 +49,4 @@ export class ExportController {
     return new Date().toISOString().slice(0, 10);
   }
 }
+
