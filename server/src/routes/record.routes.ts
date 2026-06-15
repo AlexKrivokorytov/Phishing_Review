@@ -1,14 +1,5 @@
 import { Router } from 'express';
-import { RecordController } from '../controllers/RecordController';
-import { RecordService } from '../services/RecordService';
-import { RecordRepository } from '../repositories/RecordRepository';
-import { TagRepository } from '../repositories/TagRepository';
-import db from '../db';
-
-const recordRepo = new RecordRepository(db);
-const tagRepo = new TagRepository(db);
-const recordService = new RecordService(recordRepo, tagRepo);
-const recordController = new RecordController(recordService);
+import { recordController } from '../container';
 
 const router = Router();
 

@@ -40,13 +40,20 @@ export function initDB() {
       )
     `).run();
 
+    db.prepare(`
+      CREATE INDEX IF NOT EXISTS idx_records_status ON records(status)
+    `).run();
+
+    db.prepare(`
+      CREATE INDEX IF NOT EXISTS idx_records_label ON records(label)
+    `).run();
+
     // FTS5 content table backed by records; content_rowid links to the implicit rowid
     db.prepare(`
       CREATE VIRTUAL TABLE IF NOT EXISTS records_fts
       USING fts5(url_or_email, notes, content=records, content_rowid=rowid)
     `).run();
 
-    db.prepare(`INSERT INTO records_fts(records_fts) VALUES('rebuild')`).run();
 
     db.prepare(`
       CREATE TRIGGER IF NOT EXISTS records_ai AFTER INSERT ON records BEGIN

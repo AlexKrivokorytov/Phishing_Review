@@ -1,5 +1,5 @@
 import type { Database } from 'better-sqlite3';
-import type { Record, UpdateRecordDto, RecordFilters } from '../types/record.types';
+import type { Record, RecordWithTags, Tag, UpdateRecordDto, RecordFilters } from '../types/record.types';
 
 export class RecordRepository {
   constructor(private readonly db: Database) {}
@@ -27,6 +27,56 @@ export class RecordRepository {
 
     query += ' ORDER BY imported_at DESC';
     return this.db.prepare(query).all(...params) as Record[];
+  }
+
+  /**
+   * Fetches all records with their associated tags in a single SQL query.
+   * Uses LEFT JOIN + GROUP_CONCAT to avoid the N+1 query problem.
+   * Each row's `tags_raw` column looks like "1:brand_impersonation|3:credential_form".
+   */
+  public findAllWithTags(filters: RecordFilters = {}): RecordWithTags[] {
+    const conditions: string[] = [];
+    const params: unknown[] = [];
+
+    if (filters.status) {
+      conditions.push('r.status = ?');
+      params.push(filters.status);
+    }
+
+    if (filters.search) {
+      const terms = filters.search.trim().split(/\s+/);
+      const ftsQuery = terms.map((t) => `"${t}"`).join(' ');
+      conditions.push('r.rowid IN (SELECT rowid FROM records_fts WHERE records_fts MATCH ?)');
+      params.push(ftsQuery);
+    }
+
+    const where = conditions.length > 0 ? 'WHERE ' + conditions.join(' AND ') : '';
+
+    const query = `
+      SELECT
+        r.*,
+        GROUP_CONCAT(t.id || ':' || t.name, '|') AS tags_raw
+      FROM records r
+      LEFT JOIN record_evidence_tags ret ON ret.record_id = r.id
+      LEFT JOIN tags t ON t.id = ret.tag_id
+      ${where}
+      GROUP BY r.id
+      ORDER BY r.imported_at DESC
+    `;
+
+    type RawRow = Record & { tags_raw: string | null };
+
+    return (this.db.prepare(query).all(...params) as RawRow[]).map((row) => {
+      const tags: Tag[] = row.tags_raw
+        ? row.tags_raw.split('|').map((part) => {
+            const [id, ...nameParts] = part.split(':');
+            return { id: Number(id), name: nameParts.join(':') };
+          })
+        : [];
+
+      const { tags_raw: _, ...record } = row;
+      return { ...record, tags };
+    });
   }
 
   public findById(id: string): Record | undefined {
@@ -74,13 +124,20 @@ export class RecordRepository {
   }
 
   public getCounts(): { total: number; new: number; reviewed: number; phishing: number } {
-    const n = (sql: string) => (this.db.prepare(sql).get() as { cnt: number }).cnt;
+    const row = this.db.prepare(`
+      SELECT
+        COUNT(*)                                         AS total,
+        COUNT(CASE WHEN status = 'new'      THEN 1 END) AS new_count,
+        COUNT(CASE WHEN status = 'reviewed' THEN 1 END) AS reviewed_count,
+        COUNT(CASE WHEN label  = 'phishing' THEN 1 END) AS phishing_count
+      FROM records
+    `).get() as { total: number; new_count: number; reviewed_count: number; phishing_count: number };
 
     return {
-      total:    n('SELECT COUNT(*) as cnt FROM records'),
-      new:      n("SELECT COUNT(*) as cnt FROM records WHERE status = 'new'"),
-      reviewed: n("SELECT COUNT(*) as cnt FROM records WHERE status = 'reviewed'"),
-      phishing: n("SELECT COUNT(*) as cnt FROM records WHERE label = 'phishing'"),
+      total:    row.total,
+      new:      row.new_count,
+      reviewed: row.reviewed_count,
+      phishing: row.phishing_count,
     };
   }
 }

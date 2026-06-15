@@ -25,7 +25,7 @@ describe('RecordService', () => {
 
   beforeEach(() => {
     mockRecordRepo = {
-      findAll: vi.fn().mockReturnValue([makeFakeRecord()]),
+      findAllWithTags: vi.fn().mockReturnValue([makeFakeRecord()]),
       findById: vi.fn().mockReturnValue(makeFakeRecord()),
       update: vi.fn().mockReturnValue(1),
       getCounts: vi.fn().mockReturnValue({ total: 1, new: 1, reviewed: 0, phishing: 0 }),
@@ -46,14 +46,13 @@ describe('RecordService', () => {
       expect(records).toHaveLength(1);
       expect(records[0].tags).toBeDefined();
       expect(Array.isArray(records[0].tags)).toBe(true);
-      expect(mockRecordRepo.findAll).toHaveBeenCalledTimes(1);
-      expect(mockTagRepo.findByRecordId).toHaveBeenCalledWith('fake-id-001');
+      expect(mockRecordRepo.findAllWithTags).toHaveBeenCalledTimes(1);
     });
 
     it('passes filters to the repository', () => {
       const filters = { status: 'new' as const, search: 'phish' };
       service.getAll(filters);
-      expect(mockRecordRepo.findAll).toHaveBeenCalledWith(filters);
+      expect(mockRecordRepo.findAllWithTags).toHaveBeenCalledWith(filters);
     });
   });
 

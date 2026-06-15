@@ -3,6 +3,8 @@ import type { Record, RecordFilters, Status } from '../types/record';
 import { LabelBadge } from './LabelBadge';
 import { StatusBadge } from './StatusBadge';
 
+const PAGE_SIZE = 10;
+
 interface RecordTableProps {
   records: Record[];
   loading: boolean;
@@ -40,7 +42,6 @@ export const RecordTable: React.FC<RecordTableProps> = ({
     return url.substring(0, maxLength) + '...';
   };
 
-  const PAGE_SIZE = 10;
   const [currentPage, setCurrentPage] = React.useState(1);
 
   // Reset to first page when search/filter changes or records update
@@ -118,23 +119,21 @@ export const RecordTable: React.FC<RecordTableProps> = ({
       </div>
 
       {records.length > 0 && (
-        <div className="pagination" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', marginTop: '10px', padding: '10px 0' }}>
-          <button 
-            className="btn-secondary" 
+        <div className="pagination">
+          <button
+            className="btn-secondary"
             disabled={currentPage === 1}
             onClick={() => setCurrentPage(p => p - 1)}
-            style={{ padding: '4px 12px', fontSize: '13px' }}
           >
             Prev
           </button>
-          <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
+          <span className="pagination-info">
             Page {currentPage} of {totalPages}
           </span>
-          <button 
-            className="btn-secondary" 
+          <button
+            className="btn-secondary"
             disabled={currentPage === totalPages}
             onClick={() => setCurrentPage(p => p + 1)}
-            style={{ padding: '4px 12px', fontSize: '13px' }}
           >
             Next
           </button>

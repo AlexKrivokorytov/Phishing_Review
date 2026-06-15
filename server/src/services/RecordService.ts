@@ -9,11 +9,7 @@ export class RecordService {
   ) {}
 
   public getAll(filters: RecordFilters = {}): RecordWithTags[] {
-    const records = this.recordRepo.findAll(filters);
-    return records.map((record) => {
-      const tags = this.tagRepo.findByRecordId(record.id);
-      return { ...record, tags };
-    });
+    return this.recordRepo.findAllWithTags(filters);
   }
 
   public getById(id: string): RecordWithTags {

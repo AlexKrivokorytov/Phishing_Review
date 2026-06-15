@@ -6,7 +6,7 @@ import type {
   RecordFilters,
 } from '../types/record';
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3001';
 
 export async function fetchRecords(filters: RecordFilters = {}): Promise<Record[]> {
   const params = new URLSearchParams();
@@ -31,8 +31,6 @@ export async function fetchCounts(): Promise<RecordCounts> {
   }
   return response.json();
 }
-
-
 
 export async function updateRecord(id: string, payload: UpdateRecordPayload): Promise<Record> {
   const response = await fetch(`${BASE_URL}/api/records/${id}`, {

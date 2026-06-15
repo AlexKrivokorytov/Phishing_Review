@@ -1,7 +1,4 @@
-/**
- * Client-side TypeScript types for PhishGuard.
- * Mirror of server/src/types/record.types.ts — keep in sync manually.
- */
+// Client-side types — mirrors the server schema.
 
 export type Label = 'benign' | 'suspicious' | 'phishing' | 'malware';
 
