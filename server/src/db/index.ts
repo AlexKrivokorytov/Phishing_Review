@@ -7,7 +7,8 @@ export class DatabaseFactory {
   public static getConnection(): Database.Database {
     if (!this.instance) {
       const isTest = process.env.NODE_ENV === 'test';
-      const dbPath = isTest ? ':memory:' : path.resolve(__dirname, '../../database.db');
+      const defaultPath = path.resolve(__dirname, '../../database.db');
+      const dbPath = isTest ? ':memory:' : (process.env.DB_PATH || defaultPath);
       
       const db = new Database(dbPath);
       db.pragma('foreign_keys = ON');
