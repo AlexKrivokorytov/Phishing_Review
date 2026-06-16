@@ -1,27 +1,26 @@
-version: '3.8'
-
 services:
   server:
     build:
       context: ./server
       dockerfile: Dockerfile
+    user: root
     ports:
-      - "3001:3001"
+      - "${PORT:-3001}:3001"
     volumes:
-      - server_data:/app/data
+      - server_data:/home/node/app/data
     environment:
       - NODE_ENV=production
       - PORT=3001
-      - DB_PATH=/app/data/database.db
+      - DB_PATH=/home/node/app/data/database.db
 
   client:
     build:
       context: ./client
       dockerfile: Dockerfile
       args:
-        - VITE_API_URL=http://localhost:3001
+        - VITE_API_URL=${VITE_API_URL:-http://localhost:3001}
     ports:
-      - "5173:8080"
+      - "${CLIENT_PORT:-5173}:8080"
     depends_on:
       - server
 
