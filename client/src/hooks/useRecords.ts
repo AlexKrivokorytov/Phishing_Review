@@ -12,7 +12,7 @@ interface UseRecordsReturn {
   setFilters: React.Dispatch<React.SetStateAction<RecordFilters>>;
 }
 
-const DEFAULT_COUNTS: RecordCounts = { total: 0, new: 0, reviewed: 0, phishing: 0 };
+const DEFAULT_COUNTS: RecordCounts = { total: 0, new: 0, reviewed: 0, phishing: 0, needs_second_review: 0 };
 
 export function useRecords(): UseRecordsReturn {
   const [records, setRecords] = useState<Record[]>([]);
