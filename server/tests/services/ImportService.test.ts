@@ -118,4 +118,49 @@ describe('ImportService', () => {
     const filePath = createTempFile('non-array.json', jsonContent);
     await expect(importService.processFile(filePath, new JsonImportStrategy())).rejects.toThrow('JSON file must contain an array of records.');
   });
+
+  test('import json with duplicate skips second entry', async () => {
+    const jsonContent = JSON.stringify([
+      { url_or_email: 'http://dup-json.com', source: 'manual', date_collected: '2026-03-15' },
+      { url_or_email: 'http://dup-json.com', source: 'scan', date_collected: '2026-03-16' },
+    ]);
+    const filePath = createTempFile('dup-json.json', jsonContent);
+    const result = await importService.processFile(filePath, new JsonImportStrategy());
+    expect(result.imported).toBe(1);
+    expect(result.skipped).toBe(1);
+  });
+
+  test('import json skips records with missing url_or_email', async () => {
+    const jsonContent = JSON.stringify([
+      { url_or_email: 'http://valid-json.com', source: 'manual', date_collected: '2026-03-15' },
+      { source: 'manual', date_collected: '2026-03-16' },
+    ]);
+    const filePath = createTempFile('missing-url-json.json', jsonContent);
+    const result = await importService.processFile(filePath, new JsonImportStrategy());
+    expect(result.imported).toBe(1);
+  });
+
+  test('import csv with valid email address', async () => {
+    const csvContent =
+      'url_or_email,source,date_collected\n' +
+      'user@phishing-campaign.org,manual,2026-03-15\n';
+    const filePath = createTempFile('email-test.csv', csvContent);
+    const result = await importService.processFile(filePath, new CsvImportStrategy());
+    expect(result.imported).toBe(1);
+    const record = db.prepare('SELECT * FROM records').get() as { url_or_email: string; notes: string };
+    expect(record.url_or_email).toBe('user@phishing-campaign.org');
+    expect(record.notes).toBe('');
+  });
+
+  test('import csv with multiple invalid urls marks all as invalid', async () => {
+    const csvContent =
+      'url_or_email,source,date_collected\n' +
+      'not-a-url,manual,2026-03-15\n' +
+      'also-not-a-url,manual,2026-03-16\n';
+    const filePath = createTempFile('multi-invalid.csv', csvContent);
+    const result = await importService.processFile(filePath, new CsvImportStrategy());
+    expect(result.imported).toBe(2);
+    const records = db.prepare('SELECT * FROM records').all() as { notes: string }[];
+    expect(records.every(r => r.notes === 'Invalid URL or Email')).toBe(true);
+  });
 });

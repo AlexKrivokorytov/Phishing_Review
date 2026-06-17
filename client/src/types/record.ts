@@ -26,6 +26,7 @@ export interface RecordCounts {
   total: number;
   new: number;
   reviewed: number;
+  needs_second_review: number;
   phishing: number;
 }
 
@@ -45,5 +46,6 @@ export interface ImportResult {
 
 export interface RecordFilters {
   status?: Status | '';
+  label?: Label | '';
   search?: string;
 }

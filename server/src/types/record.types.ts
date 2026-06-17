@@ -8,7 +8,7 @@
 // ---------------------------------------------------------------------------
 
 /** The label a reviewer assigns to a record after analysis. */
-type Label = 'benign' | 'suspicious' | 'phishing' | 'malware';
+export type Label = 'benign' | 'suspicious' | 'phishing' | 'malware';
 
 /** The workflow state of a record. */
 export type Status = 'new' | 'reviewed' | 'needs_second_review';
@@ -63,5 +63,6 @@ export interface UpdateRecordDto {
 /** Parameters accepted by GET /api/records for filtering/searching. */
 export interface RecordFilters {
   status?: Status;
+  label?: Label;
   search?: string;
 }

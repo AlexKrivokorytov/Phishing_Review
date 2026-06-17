@@ -38,6 +38,8 @@ describe('ExportService', () => {
       expect(Array.isArray(parsed)).toBe(true);
       expect(parsed).toHaveLength(1);
       expect(parsed[0].id).toBe('test-id-1');
+      expect(parsed[0].evidence_tags).toEqual(['brand_impersonation', 'credential_form']);
+      expect(parsed[0]).not.toHaveProperty('tags');
       expect(mockRecordService.getAll).toHaveBeenCalled();
     });
 
@@ -55,7 +57,7 @@ describe('ExportService', () => {
       
       const header = lines[0];
       expect(header).toContain('url_or_email');
-      expect(header).toContain('tags');
+      expect(header).toContain('evidence_tags');
       expect(header).toContain('label');
     });
 

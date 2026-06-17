@@ -14,6 +14,11 @@ export class RecordRepository {
       params.push(filters.status);
     }
 
+    if (filters.label) {
+      conditions.push('label = ?');
+      params.push(filters.label);
+    }
+
     if (filters.search) {
       const terms = filters.search.trim().split(/\s+/);
       const ftsQuery = terms.map((t) => `"${t}"*`).join(' ');
@@ -41,6 +46,11 @@ export class RecordRepository {
     if (filters.status) {
       conditions.push('r.status = ?');
       params.push(filters.status);
+    }
+
+    if (filters.label) {
+      conditions.push('r.label = ?');
+      params.push(filters.label);
     }
 
     if (filters.search) {
@@ -123,21 +133,23 @@ export class RecordRepository {
     return this.db.prepare(`UPDATE records SET ${updates.join(', ')} WHERE id = ?`).run(...params).changes;
   }
 
-  public getCounts(): { total: number; new: number; reviewed: number; phishing: number } {
+  public getCounts(): { total: number; new: number; reviewed: number; needs_second_review: number; phishing: number } {
     const row = this.db.prepare(`
       SELECT
-        COUNT(*)                                         AS total,
-        COUNT(CASE WHEN status = 'new'      THEN 1 END) AS new_count,
-        COUNT(CASE WHEN status = 'reviewed' THEN 1 END) AS reviewed_count,
-        COUNT(CASE WHEN label  = 'phishing' THEN 1 END) AS phishing_count
+        COUNT(*)                                                      AS total,
+        COUNT(CASE WHEN status = 'new'                 THEN 1 END)   AS new_count,
+        COUNT(CASE WHEN status = 'reviewed'            THEN 1 END)   AS reviewed_count,
+        COUNT(CASE WHEN status = 'needs_second_review' THEN 1 END)   AS needs_second_review_count,
+        COUNT(CASE WHEN label  = 'phishing'            THEN 1 END)   AS phishing_count
       FROM records
-    `).get() as { total: number; new_count: number; reviewed_count: number; phishing_count: number };
+    `).get() as { total: number; new_count: number; reviewed_count: number; needs_second_review_count: number; phishing_count: number };
 
     return {
-      total:    row.total,
-      new:      row.new_count,
-      reviewed: row.reviewed_count,
-      phishing: row.phishing_count,
+      total:                row.total,
+      new:                  row.new_count,
+      reviewed:             row.reviewed_count,
+      needs_second_review:  row.needs_second_review_count,
+      phishing:             row.phishing_count,
     };
   }
 }

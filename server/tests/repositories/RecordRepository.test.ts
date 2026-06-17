@@ -95,12 +95,37 @@ describe('RecordRepository', () => {
     repo.insert(makeRecord({ status: 'new', label: null }));
     repo.insert(makeRecord({ status: 'new', label: 'phishing' }));
     repo.insert(makeRecord({ status: 'reviewed', label: null }));
+    repo.insert(makeRecord({ status: 'needs_second_review', label: null }));
     const counts = repo.getCounts();
     expect(counts).toEqual({
-      total: 3,
+      total: 4,
       new: 2,
       reviewed: 1,
+      needs_second_review: 1,
       phishing: 1,
     });
+  });
+
+  it('findAll filters by label', () => {
+    repo.insert(makeRecord({ label: 'phishing' }));
+    repo.insert(makeRecord({ label: 'benign' }));
+    repo.insert(makeRecord({ label: null }));
+    const results = repo.findAll({ label: 'phishing' });
+    expect(results).toHaveLength(1);
+    expect(results[0].label).toBe('phishing');
+  });
+
+  it('update sets reviewed_at to null when status changes back to new', () => {
+    const record = makeRecord({ status: 'new' });
+    repo.insert(record);
+    repo.update(record.id, { status: 'reviewed' });
+    repo.update(record.id, { status: 'new' });
+    const updated = repo.findById(record.id);
+    expect(updated?.reviewed_at).toBeNull();
+  });
+
+  it('update returns 0 for a non-existent id', () => {
+    const changes = repo.update('does-not-exist', { status: 'reviewed' });
+    expect(changes).toBe(0);
   });
 });

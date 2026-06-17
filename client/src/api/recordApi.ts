@@ -25,6 +25,7 @@ async function apiFetch<T>(endpoint: string, options?: RequestInit): Promise<T> 
 export async function fetchRecords(filters: RecordFilters = {}): Promise<Record[]> {
   const params = new URLSearchParams();
   if (filters.status) params.append('status', filters.status);
+  if (filters.label) params.append('label', filters.label);
   if (filters.search) params.append('search', filters.search);
   return apiFetch<Record[]>(`/api/records?${params.toString()}`);
 }

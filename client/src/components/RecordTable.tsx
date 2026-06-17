@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Record, RecordFilters, Status } from '../types/record';
+import type { Record, RecordFilters, Status, Label } from '../types/record';
 import { LabelBadge } from './LabelBadge';
 import { StatusBadge } from './StatusBadge';
 
@@ -21,6 +21,14 @@ const STATUS_OPTIONS: Array<{ value: Status | ''; label: string }> = [
   { value: 'needs_second_review', label: 'Needs review' },
 ];
 
+const LABEL_OPTIONS: Array<{ value: Label | ''; label: string }> = [
+  { value: '', label: 'All labels' },
+  { value: 'phishing', label: 'Phishing' },
+  { value: 'malware', label: 'Malware' },
+  { value: 'suspicious', label: 'Suspicious' },
+  { value: 'benign', label: 'Benign' },
+];
+
 export const RecordTable: React.FC<RecordTableProps> = ({
   records,
   loading,
@@ -35,6 +43,10 @@ export const RecordTable: React.FC<RecordTableProps> = ({
 
   const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     onFiltersChange((prev) => ({ ...prev, status: e.target.value as Status | '' }));
+  };
+
+  const handleLabelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    onFiltersChange((prev) => ({ ...prev, label: e.target.value as Label | '' }));
   };
 
   const truncateUrl = (url: string, maxLength: number = 35): string => {
@@ -69,6 +81,17 @@ export const RecordTable: React.FC<RecordTableProps> = ({
           className="filter-select"
         >
           {STATUS_OPTIONS.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <select
+          value={filters.label || ''}
+          onChange={handleLabelChange}
+          className="filter-select"
+        >
+          {LABEL_OPTIONS.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
             </option>

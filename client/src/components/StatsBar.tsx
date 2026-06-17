@@ -20,6 +20,10 @@ export const StatsBar: React.FC<StatsBarProps> = ({ counts }) => {
         <span className="stat-value cell-mono">{counts.reviewed}</span>
         <span className="stat-label">Reviewed</span>
       </div>
+      <div className="stat-card" style={{ borderLeft: '3px solid var(--label-suspicious)' }}>
+        <span className="stat-value cell-mono">{counts.needs_second_review}</span>
+        <span className="stat-label">Needs review</span>
+      </div>
       <div className="stat-card" style={{ borderLeft: '3px solid var(--label-phishing)' }}>
         <span className="stat-value cell-mono">{counts.phishing}</span>
         <span className="stat-label">Phishing</span>

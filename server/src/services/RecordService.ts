@@ -35,7 +35,7 @@ export class RecordService {
     return this.getById(id);
   }
 
-  public getCounts(): { total: number; new: number; reviewed: number; phishing: number } {
+  public getCounts(): { total: number; new: number; reviewed: number; needs_second_review: number; phishing: number } {
     return this.recordRepo.getCounts();
   }
 }

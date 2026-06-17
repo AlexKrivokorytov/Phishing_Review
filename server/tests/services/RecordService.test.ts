@@ -28,7 +28,7 @@ describe('RecordService', () => {
       findAllWithTags: vi.fn().mockReturnValue([makeFakeRecord()]),
       findById: vi.fn().mockReturnValue(makeFakeRecord()),
       update: vi.fn().mockReturnValue(1),
-      getCounts: vi.fn().mockReturnValue({ total: 1, new: 1, reviewed: 0, phishing: 0 }),
+      getCounts: vi.fn().mockReturnValue({ total: 1, new: 1, reviewed: 0, needs_second_review: 0, phishing: 0 }),
     };
     mockTagRepo = {
       findByRecordId: vi.fn().mockReturnValue([]),
@@ -92,7 +92,7 @@ describe('RecordService', () => {
   describe('getCounts()', () => {
     it('delegates to recordRepo.getCounts()', () => {
       const counts = service.getCounts();
-      expect(counts).toEqual({ total: 1, new: 1, reviewed: 0, phishing: 0 });
+      expect(counts).toEqual({ total: 1, new: 1, reviewed: 0, needs_second_review: 0, phishing: 0 });
       expect(mockRecordRepo.getCounts).toHaveBeenCalledTimes(1);
     });
   });
