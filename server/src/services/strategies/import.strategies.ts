@@ -1,17 +1,22 @@
 import fs from 'fs';
 import { parse } from 'csv-parse';
 
+// Represents a row from parsed CSV/JSON
 export interface CsvRow {
   url_or_email: string;
   source: string;
   date_collected: string;
 }
 
+// Interface for file import strategies
 export interface IImportStrategy {
+  // Parses a file and returns parsed rows
   parse(filePath: string): Promise<CsvRow[]>;
 }
 
+// Import strategy for JSON files. Deletes the file when done.
 export class JsonImportStrategy implements IImportStrategy {
+  // Reads and parses JSON array
   public async parse(filePath: string): Promise<CsvRow[]> {
     try {
       const fileContent = fs.readFileSync(filePath, 'utf-8');
@@ -38,7 +43,9 @@ export class JsonImportStrategy implements IImportStrategy {
   }
 }
 
+// Import strategy for CSV files. Deletes the file when done.
 export class CsvImportStrategy implements IImportStrategy {
+  // Reads and parses CSV file stream
   public async parse(filePath: string): Promise<CsvRow[]> {
     return new Promise((resolve, reject) => {
       const parsedRows: CsvRow[] = [];

@@ -9,25 +9,24 @@ import type {
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3001';
 
-/** Generic fetch helper to eliminate boilerplate error handling */
+// Generic fetch helper that converts response to JSON. For exporting, use downloadExport instead.
 async function apiFetch<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const response = await fetch(`${BASE_URL}${endpoint}`, options);
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
     throw new Error(errorData.error || `Request failed: ${response.statusText}`);
   }
-  // Download endpoints return blob, we shouldn't parse as JSON
-  return response.headers.get('content-type')?.includes('application/json') 
-    ? response.json() 
-    : response.blob() as unknown as T;
+  return response.json() as Promise<T>;
 }
 
-export async function fetchRecords(filters: RecordFilters = {}): Promise<Record[]> {
+export async function fetchRecords(filters: RecordFilters = {}): Promise<{ data: Record[]; total: number }> {
   const params = new URLSearchParams();
   if (filters.status) params.append('status', filters.status);
   if (filters.label) params.append('label', filters.label);
   if (filters.search) params.append('search', filters.search);
-  return apiFetch<Record[]>(`/api/records?${params.toString()}`);
+  if (filters.page) params.append('page', filters.page.toString());
+  if (filters.limit) params.append('limit', filters.limit.toString());
+  return apiFetch<{ data: Record[]; total: number }>(`/api/records?${params.toString()}`);
 }
 
 export function fetchCounts(): Promise<RecordCounts> {

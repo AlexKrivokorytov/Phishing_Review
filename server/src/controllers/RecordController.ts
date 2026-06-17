@@ -5,12 +5,14 @@ import type { UpdateRecordDto, RecordFilters, Status, Label } from '../types/rec
 const VALID_STATUSES: Status[] = ['new', 'reviewed', 'needs_second_review'];
 const VALID_LABELS = ['benign', 'suspicious', 'phishing', 'malware'] as const;
 
+// Controller to manage review records.
 export class RecordController {
   constructor(private readonly recordService: RecordService) {}
 
+  // Gets all records from the database. Can filter by status, label or search text.
   public getAll(req: Request, res: Response, next: NextFunction): void {
     try {
-      const { status, label, search } = req.query;
+      const { status, label, search, page, limit } = req.query;
       const filters: RecordFilters = {};
 
       if (typeof status === 'string' && status) {
@@ -33,43 +35,39 @@ export class RecordController {
         filters.search = search;
       }
 
+      if (typeof page === 'string') {
+        filters.page = parseInt(page, 10);
+      }
+
+      if (typeof limit === 'string') {
+        filters.limit = parseInt(limit, 10);
+      }
+
       res.status(200).json(this.recordService.getAll(filters));
     } catch (error) {
       next(error);
     }
   }
 
+  // Gets a single record by its ID.
   public getById(req: Request, res: Response, next: NextFunction): void {
     try {
-      const { id } = req.params;
-      if (typeof id !== 'string') {
-        res.status(400).json({ error: 'Record ID must be a single string' });
+      const id = String(req.params.id);
+      res.status(200).json(this.recordService.getById(id));
+    } catch (error: unknown) {
+      const err = error as Error;
+      if (err.message?.includes('Record not found')) {
+        res.status(404).json({ error: err.message });
         return;
       }
-
-      try {
-        res.status(200).json(this.recordService.getById(id));
-      } catch (err: unknown) {
-        const error = err as Error;
-        if (error.message?.includes('Record not found')) {
-          res.status(404).json({ error: error.message });
-          return;
-        }
-        throw err;
-      }
-    } catch (error) {
       next(error);
     }
   }
 
+  // Updates a record (label, status, notes, tags).
   public update(req: Request, res: Response, next: NextFunction): void {
     try {
-      const { id } = req.params;
-      if (typeof id !== 'string') {
-        res.status(400).json({ error: 'Record ID must be a single string' });
-        return;
-      }
-
+      const id = String(req.params.id);
       const dto: UpdateRecordDto = req.body;
 
       if (dto.status !== undefined && !VALID_STATUSES.includes(dto.status)) {
@@ -87,21 +85,18 @@ export class RecordController {
         return;
       }
 
-      try {
-        res.status(200).json(this.recordService.review(id, dto));
-      } catch (err: unknown) {
-        const error = err as Error;
-        if (error.message?.includes('Record not found')) {
-          res.status(404).json({ error: error.message });
-          return;
-        }
-        throw err;
+      res.status(200).json(this.recordService.review(id, dto));
+    } catch (error: unknown) {
+      const err = error as Error;
+      if (err.message?.includes('Record not found')) {
+        res.status(404).json({ error: err.message });
+        return;
       }
-    } catch (error) {
       next(error);
     }
   }
 
+  // Gets counts for the stats bar (Total, New, Reviewed, Needs Review, Phishing).
   public getCounts(req: Request, res: Response, next: NextFunction): void {
     try {
       res.status(200).json(this.recordService.getCounts());

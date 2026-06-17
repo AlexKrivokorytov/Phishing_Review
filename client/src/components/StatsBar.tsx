@@ -8,23 +8,23 @@ interface StatsBarProps {
 export const StatsBar: React.FC<StatsBarProps> = ({ counts }) => {
   return (
     <div className="stats-bar" role="region" aria-label="Summary statistics">
-      <div className="stat-card" style={{ borderLeft: '3px solid var(--accent)' }}>
+      <div className="stat-card stat-card--total">
         <span className="stat-value cell-mono">{counts.total}</span>
         <span className="stat-label">Total</span>
       </div>
-      <div className="stat-card" style={{ borderLeft: '3px solid var(--text-muted)' }}>
+      <div className="stat-card stat-card--new">
         <span className="stat-value cell-mono">{counts.new}</span>
         <span className="stat-label">New</span>
       </div>
-      <div className="stat-card" style={{ borderLeft: '3px solid var(--label-benign)' }}>
+      <div className="stat-card stat-card--reviewed">
         <span className="stat-value cell-mono">{counts.reviewed}</span>
         <span className="stat-label">Reviewed</span>
       </div>
-      <div className="stat-card" style={{ borderLeft: '3px solid var(--label-suspicious)' }}>
+      <div className="stat-card stat-card--needs-review">
         <span className="stat-value cell-mono">{counts.needs_second_review}</span>
         <span className="stat-label">Needs review</span>
       </div>
-      <div className="stat-card" style={{ borderLeft: '3px solid var(--label-phishing)' }}>
+      <div className="stat-card stat-card--phishing">
         <span className="stat-value cell-mono">{counts.phishing}</span>
         <span className="stat-label">Phishing</span>
       </div>

@@ -5,27 +5,19 @@ interface LabelBadgeProps {
   label: Label | null;
 }
 
-export const LabelBadge: React.FC<LabelBadgeProps> = ({ label }) => {
-  let color = 'var(--text-muted)';
-  let text = '—';
+const LABEL_DISPLAY: Record<Label, { color: string; text: string }> = {
+  phishing:   { color: 'var(--label-phishing)',   text: 'PHISHING'   },
+  suspicious: { color: 'var(--label-suspicious)', text: 'SUSPICIOUS' },
+  malware:    { color: 'var(--label-malware)',    text: 'MALWARE'    },
+  benign:     { color: 'var(--label-benign)',     text: 'BENIGN'     },
+};
 
-  if (label === 'phishing') {
-    color = 'var(--label-phishing)';
-    text = 'PHISHING';
-  } else if (label === 'suspicious') {
-    color = 'var(--label-suspicious)';
-    text = 'SUSPICIOUS';
-  } else if (label === 'malware') {
-    color = 'var(--label-malware)';
-    text = 'MALWARE';
-  } else if (label === 'benign') {
-    color = 'var(--label-benign)';
-    text = 'BENIGN';
-  }
+export const LabelBadge: React.FC<LabelBadgeProps> = ({ label }) => {
+  const display = label ? LABEL_DISPLAY[label] : { color: 'var(--text-muted)', text: '—' };
 
   return (
-    <span className="label-badge" style={{ color, fontWeight: 'bold' }}>
-      {text}
+    <span className="label-badge" style={{ color: display.color, fontWeight: 'bold' }}>
+      {display.text}
     </span>
   );
 };

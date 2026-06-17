@@ -22,10 +22,10 @@ const makeRecord = (override: Partial<RecordWithTags> = {}): RecordWithTags => (
 const buildApp = (controller: RecordController) => {
   const app = express();
   app.use(express.json());
-  app.get('/api/records/counts', (req, res, next) => controller.getCounts(req, res, next));
-  app.get('/api/records/:id', (req, res, next) => controller.getById(req, res, next));
-  app.get('/api/records', (req, res, next) => controller.getAll(req, res, next));
-  app.patch('/api/records/:id', (req, res, next) => controller.update(req, res, next));
+  app.get('/api/records/counts', controller.getCounts.bind(controller));
+  app.get('/api/records/:id', controller.getById.bind(controller));
+  app.get('/api/records', controller.getAll.bind(controller));
+  app.patch('/api/records/:id', controller.update.bind(controller));
   app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
     res.status(500).json({ error: err.message });
   });
@@ -38,7 +38,7 @@ describe('RecordController', () => {
 
   beforeEach(() => {
     mockService = {
-      getAll: vi.fn().mockReturnValue([makeRecord()]),
+      getAll: vi.fn().mockReturnValue({ data: [makeRecord()], total: 1 }),
       getById: vi.fn().mockReturnValue(makeRecord()),
       review: vi.fn().mockReturnValue(makeRecord({ label: 'phishing', status: 'reviewed' })),
       getCounts: vi.fn().mockReturnValue({ total: 1, new: 1, reviewed: 0, phishing: 0 }),
@@ -50,8 +50,9 @@ describe('RecordController', () => {
     it('returns 200 with records array', async () => {
       const res = await request(app).get('/api/records');
       expect(res.status).toBe(200);
-      expect(Array.isArray(res.body)).toBe(true);
-      expect(res.body[0].id).toBe('test-id-001');
+      expect(Array.isArray(res.body.data)).toBe(true);
+      expect(res.body.data[0].id).toBe('test-id-001');
+      expect(res.body.total).toBe(1);
     });
 
     it('passes status filter to service', async () => {

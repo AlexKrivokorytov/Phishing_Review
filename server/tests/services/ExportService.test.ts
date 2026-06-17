@@ -26,7 +26,7 @@ describe('ExportService', () => {
 
   beforeEach(() => {
     mockRecordService = {
-      getAll: vi.fn().mockReturnValue([mockRecord])
+      getAll: vi.fn().mockReturnValue({ data: [mockRecord], total: 1 })
     };
     exportService = new ExportService(mockRecordService as RecordService);
   });

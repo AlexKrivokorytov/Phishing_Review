@@ -1,14 +1,19 @@
-import Database from 'better-sqlite3';
 import path from 'path';
 
+import Database from 'better-sqlite3';
+
+import { config } from '../config';
+import { logger } from '../utils/logger';
+
+// Class to manage the SQLite database connection.
 export class DatabaseFactory {
   private static instance: Database.Database | null = null;
 
+  // Gets or creates the database connection (Singleton). Uses in-memory database for tests.
   public static getConnection(): Database.Database {
     if (!this.instance) {
       const isTest = process.env.NODE_ENV === 'test';
-      const defaultPath = path.resolve(__dirname, '../../database.db');
-      const dbPath = isTest ? ':memory:' : (process.env.DB_PATH || defaultPath);
+      const dbPath = isTest ? config.db.memoryPath : (process.env.DB_PATH || config.db.defaultPath);
       
       const db = new Database(dbPath);
       db.pragma('foreign_keys = ON');
@@ -19,6 +24,7 @@ export class DatabaseFactory {
     return this.instance;
   }
 
+  // Closes and resets the current database connection. Used for resetting test state.
   public static resetConnection(): void {
     if (this.instance) {
       this.instance.close();
@@ -68,6 +74,10 @@ export class DatabaseFactory {
       `).run();
 
       db.prepare(`
+        CREATE INDEX IF NOT EXISTS idx_records_imported_at ON records(imported_at)
+      `).run();
+
+      db.prepare(`
         CREATE VIRTUAL TABLE IF NOT EXISTS records_fts
         USING fts5(url_or_email, notes, content=records, content_rowid=rowid)
       `).run();
@@ -96,19 +106,12 @@ export class DatabaseFactory {
       `).run();
 
       const insertTag = db.prepare(`INSERT OR IGNORE INTO tags (name) VALUES (?)`);
-      const initialTags = [
-        'suspicious_domain',
-        'credential_form',
-        'url_shortener',
-        'brand_impersonation',
-        'suspicious_attachment_reference',
-      ];
-      for (const tag of initialTags) {
+      for (const tag of config.db.initialTags) {
         insertTag.run(tag);
       }
     });
 
     setup();
-    console.log('[DatabaseFactory] Schema initialized');
+    logger.info('database_schema_initialized', { path: db.name });
   }
 }

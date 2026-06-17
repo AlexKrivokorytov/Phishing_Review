@@ -48,4 +48,6 @@ export interface RecordFilters {
   status?: Status | '';
   label?: Label | '';
   search?: string;
+  page?: number;
+  limit?: number;
 }

@@ -5,6 +5,7 @@ import type { Record, RecordCounts, RecordFilters } from '../types/record';
 interface UseRecordsReturn {
   records: Record[];
   counts: RecordCounts;
+  totalRecords: number;
   loading: boolean;
   error: string | null;
   refresh: () => void;
@@ -16,14 +17,15 @@ const DEFAULT_COUNTS: RecordCounts = { total: 0, new: 0, reviewed: 0, phishing: 
 
 export function useRecords(): UseRecordsReturn {
   const [records, setRecords] = useState<Record[]>([]);
+  const [totalRecords, setTotalRecords] = useState<number>(0);
   const [counts, setCounts] = useState<RecordCounts>(DEFAULT_COUNTS);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [filters, setFilters] = useState<RecordFilters>({ status: '', search: '' });
+  const [filters, setFilters] = useState<RecordFilters>({ status: '', search: '', page: 1, limit: 10 });
   const [debouncedFilters, setDebouncedFilters] = useState<RecordFilters>(filters);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Debounce only the search field; status changes fire immediately
+  // Debounce all filter changes to avoid firing an API request on every keystroke.
   useEffect(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
@@ -38,8 +40,9 @@ export function useRecords(): UseRecordsReturn {
     setLoading(true);
     setError(null);
     Promise.all([fetchRecords(debouncedFilters), fetchCounts()])
-      .then(([recordsData, countsData]) => {
-        setRecords(recordsData);
+      .then(([response, countsData]) => {
+        setRecords(response.data);
+        setTotalRecords(response.total);
         setCounts(countsData);
       })
       .catch((err: unknown) => {
@@ -54,5 +57,5 @@ export function useRecords(): UseRecordsReturn {
     refresh();
   }, [refresh]);
 
-  return { records, counts, loading, error, refresh, filters, setFilters };
+  return { records, counts, totalRecords, loading, error, refresh, filters, setFilters };
 }

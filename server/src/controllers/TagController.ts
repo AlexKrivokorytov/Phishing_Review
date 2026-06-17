@@ -1,16 +1,17 @@
-import type { Request, Response } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 import type { TagRepository } from '../repositories/TagRepository';
 
+// Controller to handle evidence tag requests.
 export class TagController {
   constructor(private readonly tagRepo: TagRepository) {}
 
-  public getAllTags = (req: Request, res: Response): void => {
+  // Gets all available tags.
+  public getAllTags(req: Request, res: Response, next: NextFunction): void {
     try {
       const tags = this.tagRepo.findAll();
-      res.json(tags);
+      res.status(200).json(tags);
     } catch (err: unknown) {
-      console.error('[TagController] Error fetching tags:', err);
-      res.status(500).json({ error: 'Failed to fetch tags' });
+      next(err);
     }
-  };
+  }
 }

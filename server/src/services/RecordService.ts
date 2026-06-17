@@ -2,16 +2,21 @@ import type { RecordRepository } from '../repositories/RecordRepository';
 import type { TagRepository } from '../repositories/TagRepository';
 import type { RecordWithTags, UpdateRecordDto, RecordFilters } from '../types/record.types';
 
+// Service to manage phishing records.
 export class RecordService {
   constructor(
     private readonly recordRepo: RecordRepository,
     private readonly tagRepo: TagRepository,
   ) {}
 
-  public getAll(filters: RecordFilters = {}): RecordWithTags[] {
-    return this.recordRepo.findAllWithTags(filters);
+  // Gets all records from the database.
+  public getAll(filters: RecordFilters = {}): { data: RecordWithTags[]; total: number } {
+    const data = this.recordRepo.findAllWithTags(filters);
+    const total = this.recordRepo.countAllWithTags(filters);
+    return { data, total };
   }
 
+  // Gets a single record by its ID.
   public getById(id: string): RecordWithTags {
     const record = this.recordRepo.findById(id);
     if (!record) throw new Error(`Record not found: id=${id}`);
@@ -19,7 +24,7 @@ export class RecordService {
     return { ...record, tags };
   }
 
-  /** Applies label/status/notes/tags update and returns the refreshed record. */
+  // Updates a record with a review label, status, notes, and tags.
   public review(id: string, dto: UpdateRecordDto): RecordWithTags {
     if (Object.keys(dto).length === 0) {
       throw new Error('Update payload cannot be empty');
@@ -35,6 +40,7 @@ export class RecordService {
     return this.getById(id);
   }
 
+  // Gets totals and status-based counts of records.
   public getCounts(): { total: number; new: number; reviewed: number; needs_second_review: number; phishing: number } {
     return this.recordRepo.getCounts();
   }

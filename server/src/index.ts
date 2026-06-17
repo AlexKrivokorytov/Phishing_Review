@@ -1,12 +1,15 @@
-import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
+import express, { NextFunction, Request, Response } from 'express';
+
+import exportRoutes from './routes/export.routes';
 import importRoutes from './routes/import.routes';
 import recordRoutes from './routes/record.routes';
-import exportRoutes from './routes/export.routes';
 import tagRoutes from './routes/tag.routes';
+import { config } from './config';
+import { logger } from './utils/logger';
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || config.server.defaultPort;
 
 app.use(cors());
 app.use(express.json());
@@ -18,10 +21,10 @@ app.use('/api/tags', tagRoutes);
 
 // must be registered last so it catches errors from all routes
 app.use((err: Error, req: Request, res: Response, _next: NextFunction) => {
-  console.error({ event: 'unhandled_error', message: err.message });
+  logger.error('unhandled_error', err, { method: req.method, url: req.url });
   res.status(500).json({ error: 'Internal server error.' });
 });
 
 app.listen(PORT, () => {
-  console.log(`server listening on :${PORT}`);
+  logger.info('server_started', { port: Number(PORT) });
 });

@@ -23,6 +23,13 @@
   gap: 10px;
 }
 
+.logo-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  color: var(--accent);
+}
+
 .logo-text {
   font-family: var(--font-mono);
   font-size: 18px;
@@ -80,6 +87,26 @@
   box-shadow: var(--shadow-card);
   cursor: default;
   transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.stat-card--total {
+  border-left: 3px solid var(--accent);
+}
+
+.stat-card--new {
+  border-left: 3px solid var(--text-muted);
+}
+
+.stat-card--reviewed {
+  border-left: 3px solid var(--label-benign);
+}
+
+.stat-card--needs-review {
+  border-left: 3px solid var(--label-suspicious);
+}
+
+.stat-card--phishing {
+  border-left: 3px solid var(--label-phishing);
 }
 
 .stat-card:hover {
@@ -188,6 +215,10 @@
   max-width: 240px;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.record-table-date {
   white-space: nowrap;
 }
 
@@ -395,9 +426,45 @@
 }
 
 .fetch-error,
-.import-error {
+.import-error,
+.export-error,
+.save-error,
+.detail-error-message {
   color: var(--label-phishing);
   font-size: 12px;
+}
+
+.import-error {
+  margin-right: 15px;
+}
+
+.save-error {
+  padding: 4px 0;
+  display: block;
+}
+
+.detail-error-message {
+  margin-bottom: 10px;
+}
+
+.tags-checkbox-list {
+  margin-top: 5px;
+}
+
+.tag-checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  cursor: pointer;
+}
+
+.tag-name-text {
+  font-size: 0.9rem;
+}
+
+.detail-save-btn {
+  margin-top: 15px;
 }
 
 .fetch-error {
@@ -427,7 +494,6 @@
 
 .btn-close:hover {
   background: rgba(239, 68, 68, 0.2);
-  transform: scale(1.02);
 }
 
 /* Responsive UI: Tablets & Phones (max-width: 768px) */
