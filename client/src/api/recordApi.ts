@@ -56,7 +56,12 @@ export function importFile(file: File): Promise<ImportResult> {
 }
 
 export async function downloadExport(format: 'json' | 'csv'): Promise<void> {
-  const blob = await apiFetch<Blob>(`/api/export/${format}`);
+  const response = await fetch(`${BASE_URL}/api/export/${format}`);
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error || `Request failed: ${response.statusText}`);
+  }
+  const blob = await response.blob();
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement('a');
   anchor.href = url;
