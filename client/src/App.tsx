@@ -3,12 +3,33 @@ import { useRecords } from './hooks/useRecords';
 import { StatsBar } from './components/StatsBar';
 import { RecordTable } from './components/RecordTable';
 import { DetailPanel } from './components/DetailPanel';
-import { importFile, updateRecord, downloadExport, getTags } from './api/recordApi';
+import { importFile, updateRecord, downloadExport, getTags, fetchConfig, type AppConfig } from './api/recordApi';
 import type { Record, Tag, UpdateRecordPayload } from './types/record';
 import './App.css';
 
 function App() {
-  const { records, counts, totalRecords, loading, error, refresh, filters, setFilters } = useRecords();
+  const [appConfig, setAppConfig] = useState<AppConfig | null>(null);
+  const [configError, setConfigError] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    fetchConfig()
+      .then(setAppConfig)
+      .catch((err: unknown) => setConfigError(err instanceof Error ? err.message : String(err)));
+  }, []);
+
+  if (configError) {
+    return <div className="fetch-error" role="alert">Failed to load configuration: {configError}</div>;
+  }
+
+  if (!appConfig) {
+    return <div className="table-loading">Loading configuration...</div>;
+  }
+
+  return <MainApp appConfig={appConfig} />;
+}
+
+function MainApp({ appConfig }: { appConfig: AppConfig }) {
+  const { records, counts, totalRecords, loading, error, refresh, filters, setFilters } = useRecords(appConfig.defaultPagination);
 
   const [selectedRecord, setSelectedRecord] = useState<Record | null>(null);
   const [tags, setTags] = useState<Tag[]>([]);
@@ -82,7 +103,7 @@ function App() {
           >
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
           </svg>
-          <span className="logo-text">PhishGuard</span>
+          <span className="logo-text">{appConfig.appName}</span>
         </div>
 
         <div className="header-actions">
@@ -152,6 +173,8 @@ function App() {
             onSelect={setSelectedRecord}
             filters={filters}
             onFiltersChange={setFilters}
+            statusOptions={appConfig.statusOptions}
+            labelOptions={appConfig.labelOptions}
           />
         </section>
 
@@ -170,6 +193,8 @@ function App() {
             onSave={handleSave}
             saving={saving}
             onClose={() => setSelectedRecord(null)}
+            statusOptions={appConfig.statusOptions}
+            labelOptions={appConfig.labelOptions}
           />
         </section>
       </main>

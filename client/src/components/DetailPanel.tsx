@@ -1,19 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import type { Record, Tag, Label, Status, UpdateRecordPayload } from '../types/record';
-import { STATUS_OPTIONS, LABEL_OPTIONS } from '../constants';
 
 interface DetailPanelProps {
   record: Record | null;
   availableTags: Tag[];
   onSave: (id: string, payload: UpdateRecordPayload) => Promise<void>;
   saving: boolean;
-  onClose?: () => void;
+  onClose: () => void;
+  statusOptions: { value: string; label: string }[];
+  labelOptions: { value: string; label: string }[];
 }
-
-const DETAIL_LABEL_OPTIONS: Array<{ value: Label | ''; label: string }> = [
-  { value: '', label: '— Unset —' },
-  ...LABEL_OPTIONS,
-];
 
 export const DetailPanel: React.FC<DetailPanelProps> = ({
   record,
@@ -21,6 +17,8 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
   onSave,
   saving,
   onClose,
+  statusOptions,
+  labelOptions,
 }) => {
   const [label, setLabel] = useState<Label | ''>('');
   const [status, setStatus] = useState<Status>('new');
@@ -119,8 +117,11 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
             value={label}
             onChange={(e) => setLabel(e.target.value as Label | '')}
           >
-            {DETAIL_LABEL_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
+            <option value="">-- No Label --</option>
+            {labelOptions.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
             ))}
           </select>
         </div>
@@ -133,8 +134,10 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
             value={status}
             onChange={(e) => setStatus(e.target.value as Status)}
           >
-            {STATUS_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
+            {statusOptions.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
             ))}
           </select>
         </div>

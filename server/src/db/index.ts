@@ -3,6 +3,7 @@ import path from 'path';
 import Database from 'better-sqlite3';
 
 import { config } from '../config';
+import { VALID_LABELS, VALID_STATUSES } from '../config/constants';
 import { logger } from '../utils/logger';
 
 // Class to manage the SQLite database connection.
@@ -40,9 +41,9 @@ export class DatabaseFactory {
           url_or_email TEXT UNIQUE NOT NULL,
           source TEXT NOT NULL,
           date_collected TEXT NOT NULL,
-          label TEXT CHECK (label IN ('benign', 'suspicious', 'phishing', 'malware') OR label IS NULL),
+          label TEXT CHECK (label IN (${VALID_LABELS.map(l => `'${l}'`).join(', ')}) OR label IS NULL),
           notes TEXT DEFAULT '',
-          status TEXT NOT NULL DEFAULT 'new' CHECK (status IN ('new', 'reviewed', 'needs_second_review')),
+          status TEXT NOT NULL DEFAULT 'new' CHECK (status IN (${VALID_STATUSES.map(s => `'${s}'`).join(', ')})),
           imported_at TEXT NOT NULL,
           reviewed_at TEXT
         )

@@ -9,6 +9,7 @@ import { RecordController } from './controllers/RecordController';
 import { ExportController } from './controllers/ExportController';
 import { ImportController } from './controllers/ImportController';
 import { TagController } from './controllers/TagController';
+import { ConfigController } from './controllers/ConfigController';
 import { DatabaseFactory } from './db';
 
 const db = DatabaseFactory.getConnection();
@@ -23,3 +24,4 @@ export const recordController = new RecordController(recordService);
 export const exportController = new ExportController(exportService);
 export const importController = new ImportController(importService);
 export const tagController = new TagController(tagRepo);
+export const configController = new ConfigController();

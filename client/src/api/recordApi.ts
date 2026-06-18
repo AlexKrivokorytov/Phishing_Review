@@ -7,6 +7,13 @@ import type {
   Tag,
 } from '../types/record';
 
+export interface AppConfig {
+  statusOptions: { value: string; label: string }[];
+  labelOptions: { value: string; label: string }[];
+  defaultPagination: { page: number; limit: number };
+  appName: string;
+}
+
 const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3001';
 
 // Generic fetch helper that converts response to JSON. For exporting, use downloadExport instead.
@@ -35,6 +42,10 @@ export function fetchCounts(): Promise<RecordCounts> {
 
 export function getTags(): Promise<Tag[]> {
   return apiFetch<Tag[]>('/api/tags');
+}
+
+export function fetchConfig(): Promise<AppConfig> {
+  return apiFetch<AppConfig>('/api/config');
 }
 
 export function updateRecord(id: string, payload: UpdateRecordPayload): Promise<Record> {

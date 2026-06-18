@@ -15,13 +15,13 @@ interface UseRecordsReturn {
 
 const DEFAULT_COUNTS: RecordCounts = { total: 0, new: 0, reviewed: 0, phishing: 0, needs_second_review: 0 };
 
-export function useRecords(): UseRecordsReturn {
+export function useRecords(defaultPagination: { page: number; limit: number }): UseRecordsReturn {
   const [records, setRecords] = useState<Record[]>([]);
   const [totalRecords, setTotalRecords] = useState<number>(0);
   const [counts, setCounts] = useState<RecordCounts>(DEFAULT_COUNTS);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [filters, setFilters] = useState<RecordFilters>({ status: '', search: '', page: 1, limit: 10 });
+  const [filters, setFilters] = useState<RecordFilters>({ status: '', search: '', ...defaultPagination });
   const [debouncedFilters, setDebouncedFilters] = useState<RecordFilters>(filters);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 

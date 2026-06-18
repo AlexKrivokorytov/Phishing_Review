@@ -41,25 +41,25 @@ describe('RecordRepository', () => {
     expect(c2).toBe(0);
   });
 
-  it('findAll returns all inserted records', () => {
+  it('findAllWithTags returns all inserted records', () => {
     repo.insert(makeRecord());
     repo.insert(makeRecord());
-    const records = repo.findAll();
+    const records = repo.findAllWithTags();
     expect(records).toHaveLength(2);
   });
 
-  it('findAll filters by status', () => {
+  it('findAllWithTags filters by status', () => {
     repo.insert(makeRecord({ status: 'new' }));
     repo.insert(makeRecord({ status: 'reviewed' }));
-    const records = repo.findAll({ status: 'new' });
+    const records = repo.findAllWithTags({ status: 'new' });
     expect(records).toHaveLength(1);
     expect(records[0].status).toBe('new');
   });
 
-  it('findAll searches by url_or_email', () => {
+  it('findAllWithTags searches by url_or_email', () => {
     repo.insert(makeRecord({ url_or_email: 'http://phish.example.com' }));
     repo.insert(makeRecord({ url_or_email: 'http://benign.example.com' }));
-    const results = repo.findAll({ search: 'phish' });
+    const results = repo.findAllWithTags({ search: 'phish' });
     expect(results).toHaveLength(1);
     expect(results[0].url_or_email).toBe('http://phish.example.com');
   });
@@ -106,11 +106,11 @@ describe('RecordRepository', () => {
     });
   });
 
-  it('findAll filters by label', () => {
+  it('findAllWithTags filters by label', () => {
     repo.insert(makeRecord({ label: 'phishing' }));
     repo.insert(makeRecord({ label: 'benign' }));
     repo.insert(makeRecord({ label: null }));
-    const results = repo.findAll({ label: 'phishing' });
+    const results = repo.findAllWithTags({ label: 'phishing' });
     expect(results).toHaveLength(1);
     expect(results[0].label).toBe('phishing');
   });

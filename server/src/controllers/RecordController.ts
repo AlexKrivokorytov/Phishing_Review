@@ -1,9 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import type { RecordService } from '../services/RecordService';
 import type { UpdateRecordDto, RecordFilters, Status, Label } from '../types/record.types';
-
-const VALID_STATUSES: Status[] = ['new', 'reviewed', 'needs_second_review'];
-const VALID_LABELS = ['benign', 'suspicious', 'phishing', 'malware'] as const;
+import { VALID_LABELS, VALID_STATUSES } from '../config/constants';
 
 // Controller to manage review records.
 export class RecordController {

@@ -2,7 +2,6 @@ import React from 'react';
 import type { Record, RecordFilters, Status, Label } from '../types/record';
 import { LabelBadge } from './LabelBadge';
 import { StatusBadge } from './StatusBadge';
-import { STATUS_OPTIONS, LABEL_OPTIONS } from '../constants';
 
 const PAGE_SIZE = 10;
 
@@ -14,17 +13,9 @@ interface RecordTableProps {
   onSelect: (record: Record) => void;
   filters: RecordFilters;
   onFiltersChange: React.Dispatch<React.SetStateAction<RecordFilters>>;
+  statusOptions: { value: string; label: string }[];
+  labelOptions: { value: string; label: string }[];
 }
-
-const FILTER_STATUS_OPTIONS: Array<{ value: Status | ''; label: string }> = [
-  { value: '', label: 'All statuses' },
-  ...STATUS_OPTIONS,
-];
-
-const FILTER_LABEL_OPTIONS: Array<{ value: Label | ''; label: string }> = [
-  { value: '', label: 'All labels' },
-  ...LABEL_OPTIONS,
-];
 
 export const RecordTable: React.FC<RecordTableProps> = ({
   records,
@@ -34,7 +25,19 @@ export const RecordTable: React.FC<RecordTableProps> = ({
   onSelect,
   filters,
   onFiltersChange,
+  statusOptions,
+  labelOptions,
 }) => {
+  const FILTER_STATUS_OPTIONS = [
+    { value: '', label: 'All statuses' },
+    ...statusOptions,
+  ];
+
+  const FILTER_LABEL_OPTIONS = [
+    { value: '', label: 'All labels' },
+    ...labelOptions,
+  ];
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onFiltersChange((prev) => ({ ...prev, search: e.target.value, page: 1 }));
   };

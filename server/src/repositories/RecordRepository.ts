@@ -24,37 +24,6 @@ export class RecordRepository {
     `);
   }
 
-  // Gets all records from the database using SQL filters. Does not load tags.
-  public findAll(filters: RecordFilters = {}): Record[] {
-    let query = 'SELECT * FROM records';
-    const conditions: string[] = [];
-    const params: unknown[] = [];
-
-    if (filters.status) {
-      conditions.push('status = ?');
-      params.push(filters.status);
-    }
-
-    if (filters.label) {
-      conditions.push('label = ?');
-      params.push(filters.label);
-    }
-
-    if (filters.search) {
-      const cleanSearch = filters.search.replace(/[^a-zA-Z0-9\s@._-]/g, ' ');
-      const terms = cleanSearch.trim().split(/\s+/).filter(Boolean);
-      const ftsQuery = terms.map((t) => `"${t}"*`).join(' ');
-      conditions.push('rowid IN (SELECT rowid FROM records_fts WHERE records_fts MATCH ?)');
-      params.push(ftsQuery);
-    }
-
-    if (conditions.length > 0) {
-      query += ' WHERE ' + conditions.join(' AND ');
-    }
-
-    query += ' ORDER BY imported_at DESC';
-    return this.db.prepare(query).all(...params) as Record[];
-  }
 
   // Gets total count of records matching the filters.
   public countAllWithTags(filters: RecordFilters = {}): number {
