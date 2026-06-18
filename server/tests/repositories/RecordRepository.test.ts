@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { RecordRepository } from '../../src/repositories/RecordRepository';
+import { TagRepository } from '../../src/repositories/TagRepository';
 import { DatabaseFactory } from '../../src/db';
 import type { Record } from '../../src/types/record.types';
 import { randomUUID } from 'crypto';
@@ -64,6 +65,46 @@ describe('RecordRepository', () => {
     expect(results[0].url_or_email).toBe('http://phish.example.com');
   });
 
+  it('countAllWithTags returns correct count with and without filters', () => {
+    const r1 = makeRecord({ id: 'test-uuid-1', url_or_email: 'test1@example.com', label: 'phishing' });
+    const r2 = makeRecord({ id: 'test-uuid-2', url_or_email: 'test2@example.com', label: 'benign' });
+    repo.insert(r1);
+    repo.insert(r2);
+    
+    expect(repo.countAllWithTags()).toBe(2);
+    expect(repo.countAllWithTags({ label: 'phishing' })).toBe(1);
+    expect(repo.countAllWithTags({ search: 'test2@example.com' })).toBe(1);
+  });
+
+  it('findAllWithTags parses tags that contain colons', () => {
+    const record = makeRecord({ id: 'test-uuid-1' });
+    repo.insert(record);
+    const db = (repo as any).db;
+    const result = db.prepare('INSERT INTO tags (name) VALUES (?)').run('tag:with:colon');
+    const tagRepo = new TagRepository(db);
+    tagRepo.setTagsForRecord('test-uuid-1', [Number(result.lastInsertRowid)]);
+    
+    const records = repo.findAllWithTags();
+    expect(records).toHaveLength(1);
+    expect(records[0].tags[0].name).toBe('tag:with:colon');
+  });
+
+  it('findAllWithTags paginates using limit and page', () => {
+    repo.insert(makeRecord({ url_or_email: 'http://1.com' }));
+    repo.insert(makeRecord({ url_or_email: 'http://2.com' }));
+    repo.insert(makeRecord({ url_or_email: 'http://3.com' }));
+    
+    // Page 2, Limit 1
+    const results = repo.findAllWithTags({ limit: 1, page: 2 });
+    expect(results).toHaveLength(1);
+  });
+
+  it('findAllWithTags returns empty tags when none exist', () => {
+    repo.insert(makeRecord({ url_or_email: 'http://notags.com' }));
+    const results = repo.findAllWithTags();
+    expect(results[0].tags).toEqual([]);
+  });
+
 
   it('findById returns the correct record', () => {
     const record = makeRecord();
@@ -126,6 +167,13 @@ describe('RecordRepository', () => {
 
   it('update returns 0 for a non-existent id', () => {
     const changes = repo.update('does-not-exist', { status: 'reviewed' });
+    expect(changes).toBe(0);
+  });
+
+  it('update returns 0 if no fields are updated', () => {
+    const record = makeRecord();
+    repo.insert(record);
+    const changes = repo.update(record.id, {});
     expect(changes).toBe(0);
   });
 });

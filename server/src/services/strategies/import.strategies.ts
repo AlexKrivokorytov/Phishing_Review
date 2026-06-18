@@ -50,7 +50,14 @@ export class CsvImportStrategy implements IImportStrategy {
     return new Promise((resolve, reject) => {
       const parsedRows: CsvRow[] = [];
 
-      fs.createReadStream(filePath)
+      const readStream = fs.createReadStream(filePath);
+      
+      readStream.on('error', (error) => {
+        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+        reject(error);
+      });
+
+      readStream
         .pipe(parse({ columns: true, trim: true, skip_empty_lines: true }))
         .on('data', (row: CsvRow) => {
           if (row.url_or_email && row.url_or_email.trim() !== '' && row.source) {

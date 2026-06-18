@@ -88,8 +88,13 @@ describe('RecordService', () => {
       expect(mockTagRepo.setTagsForRecord).toHaveBeenCalledWith('fake-id-001', [1, 2]);
     });
 
-    it('throws when dto is empty', () => {
-      expect(() => service.review('fake-id-001', {})).toThrow('Update payload cannot be empty');
+    it('review throws if update payload is empty', () => {
+      expect(() => service.review('1', {})).toThrow('Update payload cannot be empty');
+    });
+
+    it('review throws if record not found during update', () => {
+      vi.mocked(mockRecordRepo.update!).mockReturnValueOnce(0);
+      expect(() => service.review('bad-id', { status: 'reviewed' })).toThrow('Record not found: id=bad-id');
     });
   });
 

@@ -65,10 +65,27 @@ describe('RecordController', () => {
       expect(mockService.getAll).toHaveBeenCalledWith({ search: 'phish' });
     });
 
+    it('passes page and limit filters to service', async () => {
+      await request(app).get('/api/records?page=2&limit=20');
+      expect(mockService.getAll).toHaveBeenCalledWith({ page: 2, limit: 20 });
+    });
+
+    it('returns 500 when service throws generic error', async () => {
+      mockService.getAll = vi.fn().mockImplementation(() => { throw new Error('DB Error'); });
+      const res = await request(app).get('/api/records');
+      expect(res.status).toBe(500);
+    });
+
     it('returns 400 for invalid status value', async () => {
       const res = await request(app).get('/api/records?status=unknown');
       expect(res.status).toBe(400);
       expect(res.body.error).toMatch(/Invalid status/);
+    });
+
+    it('returns 400 for invalid label value', async () => {
+      const res = await request(app).get('/api/records?label=unknown');
+      expect(res.status).toBe(400);
+      expect(res.body.error).toMatch(/Invalid label/);
     });
   });
 
@@ -77,6 +94,12 @@ describe('RecordController', () => {
       const res = await request(app).get('/api/records/counts');
       expect(res.status).toBe(200);
       expect(res.body).toMatchObject({ total: 1, new: 1, reviewed: 0, phishing: 0 });
+    });
+
+    it('returns 500 when service throws generic error', async () => {
+      mockService.getCounts = vi.fn().mockImplementation(() => { throw new Error('DB Error'); });
+      const res = await request(app).get('/api/records/counts');
+      expect(res.status).toBe(500);
     });
   });
 
@@ -93,6 +116,12 @@ describe('RecordController', () => {
       });
       const res = await request(app).get('/api/records/bad-id');
       expect(res.status).toBe(404);
+    });
+
+    it('returns 500 when service throws generic error', async () => {
+      mockService.getById = vi.fn().mockImplementation(() => { throw new Error('DB Error'); });
+      const res = await request(app).get('/api/records/test-id');
+      expect(res.status).toBe(500);
     });
   });
 
@@ -137,6 +166,12 @@ describe('RecordController', () => {
         .patch('/api/records/bad-id')
         .send({ status: 'reviewed' });
       expect(res.status).toBe(404);
+    });
+
+    it('returns 500 when service throws generic error', async () => {
+      mockService.review = vi.fn().mockImplementation(() => { throw new Error('DB Error'); });
+      const res = await request(app).patch('/api/records/test-id-001').send({});
+      expect(res.status).toBe(500);
     });
   });
 });

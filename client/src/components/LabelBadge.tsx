@@ -13,7 +13,7 @@ const LABEL_DISPLAY: Record<Label, { color: string; text: string }> = {
 };
 
 export const LabelBadge: React.FC<LabelBadgeProps> = ({ label }) => {
-  const display = label ? LABEL_DISPLAY[label] : { color: 'var(--text-muted)', text: '—' };
+  const display = label && LABEL_DISPLAY[label] ? LABEL_DISPLAY[label] : { color: 'var(--text-muted)', text: '—' };
 
   return (
     <span className="label-badge" style={{ color: display.color, fontWeight: 'bold' }}>
