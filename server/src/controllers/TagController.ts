@@ -10,8 +10,12 @@ export class TagController {
     try {
       const tags = this.tagRepo.findAll();
       res.status(200).json(tags);
-    } catch (err: unknown) {
-      next(err);
+    } catch (error: unknown) {
+      next(
+        error instanceof Error
+          ? error
+          : new Error("Unexpected tag retrieval error"),
+      );
     }
   }
 }

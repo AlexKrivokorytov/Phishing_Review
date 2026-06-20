@@ -1,6 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import { STATUS_OPTIONS, LABEL_OPTIONS } from '../config/constants';
-import { config } from '../config';
+import { STATUS_OPTIONS, LABEL_OPTIONS } from "../config/constants";
 
 export class ConfigController {
   public getConfig(req: Request, res: Response, next: NextFunction): void {

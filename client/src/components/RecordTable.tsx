@@ -1,7 +1,7 @@
-import React from 'react';
-import type { Record, RecordFilters, Status, Label } from '../types/record';
-import { LabelBadge } from './LabelBadge';
-import { StatusBadge } from './StatusBadge';
+import React, { useMemo } from "react";
+import type { Record, RecordFilters, Status, Label } from "../types/record";
+import { LabelBadge } from "./LabelBadge";
+import { StatusBadge } from "./StatusBadge";
 
 const PAGE_SIZE = 10;
 
@@ -17,7 +17,7 @@ interface RecordTableProps {
   labelOptions: { value: string; label: string }[];
 }
 
-export const RecordTable: React.FC<RecordTableProps> = ({
+export const RecordTable = React.memo(function RecordTable({
   records,
   totalRecords,
   loading,
@@ -27,33 +27,42 @@ export const RecordTable: React.FC<RecordTableProps> = ({
   onFiltersChange,
   statusOptions,
   labelOptions,
-}) => {
-  const FILTER_STATUS_OPTIONS = [
-    { value: '', label: 'All statuses' },
-    ...statusOptions,
-  ];
+}: RecordTableProps) {
+  const FILTER_STATUS_OPTIONS = useMemo(
+    () => [{ value: "", label: "All statuses" }, ...statusOptions],
+    [statusOptions],
+  );
 
-  const FILTER_LABEL_OPTIONS = [
-    { value: '', label: 'All labels' },
-    ...labelOptions,
-  ];
+  const FILTER_LABEL_OPTIONS = useMemo(
+    () => [{ value: "", label: "All labels" }, ...labelOptions],
+    [labelOptions],
+  );
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onFiltersChange((prev) => ({ ...prev, search: e.target.value, page: 1 }));
   };
 
   const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    onFiltersChange((prev) => ({ ...prev, status: e.target.value as Status | '', page: 1 }));
+    onFiltersChange((prev) => ({
+      ...prev,
+      status: e.target.value as Status | "",
+      page: 1,
+    }));
   };
 
   const handleLabelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    onFiltersChange((prev) => ({ ...prev, label: e.target.value as Label | '', page: 1 }));
+    onFiltersChange((prev) => ({
+      ...prev,
+      label: e.target.value as Label | "",
+      page: 1,
+    }));
   };
 
-
-
   const currentPage = filters.page || 1;
-  const totalPages = Math.ceil(totalRecords / PAGE_SIZE) || 1;
+  const totalPages = useMemo(
+    () => Math.ceil(totalRecords / PAGE_SIZE) || 1,
+    [totalRecords],
+  );
 
   return (
     <div className="record-table-container">
@@ -61,12 +70,12 @@ export const RecordTable: React.FC<RecordTableProps> = ({
         <input
           type="text"
           placeholder="Search URL, email or notes..."
-          value={filters.search || ''}
+          value={filters.search || ""}
           onChange={handleSearchChange}
           className="filter-input"
         />
         <select
-          value={filters.status || ''}
+          value={filters.status || ""}
           onChange={handleStatusChange}
           className="filter-select"
         >
@@ -77,7 +86,7 @@ export const RecordTable: React.FC<RecordTableProps> = ({
           ))}
         </select>
         <select
-          value={filters.label || ''}
+          value={filters.label || ""}
           onChange={handleLabelChange}
           className="filter-select"
         >
@@ -106,22 +115,30 @@ export const RecordTable: React.FC<RecordTableProps> = ({
             <tbody>
               {records.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="empty-state">No records found</td>
+                  <td colSpan={5} className="empty-state">
+                    No records found
+                  </td>
                 </tr>
               ) : (
                 records.map((record) => (
                   <tr
                     key={record.id}
-                    className={record.id === selectedId ? 'selected' : ''}
+                    className={record.id === selectedId ? "selected" : ""}
                     onClick={() => onSelect(record)}
                   >
                     <td className="cell-mono" title={record.url_or_email}>
                       {record.url_or_email}
                     </td>
-                    <td><StatusBadge status={record.status} /></td>
-                    <td><LabelBadge label={record.label} /></td>
+                    <td>
+                      <StatusBadge status={record.status} />
+                    </td>
+                    <td>
+                      <LabelBadge label={record.label} />
+                    </td>
                     <td className="hide-on-mobile">{record.source}</td>
-                    <td className="hide-on-mobile record-table-date">{record.date_collected}</td>
+                    <td className="hide-on-mobile record-table-date">
+                      {record.date_collected}
+                    </td>
                   </tr>
                 ))
               )}
@@ -135,7 +152,9 @@ export const RecordTable: React.FC<RecordTableProps> = ({
           <button
             className="btn-secondary"
             disabled={currentPage === 1}
-            onClick={() => onFiltersChange(p => ({ ...p, page: currentPage - 1 }))}
+            onClick={() =>
+              onFiltersChange((prev) => ({ ...prev, page: currentPage - 1 }))
+            }
           >
             Prev
           </button>
@@ -145,7 +164,9 @@ export const RecordTable: React.FC<RecordTableProps> = ({
           <button
             className="btn-secondary"
             disabled={currentPage === totalPages}
-            onClick={() => onFiltersChange(p => ({ ...p, page: currentPage + 1 }))}
+            onClick={() =>
+              onFiltersChange((prev) => ({ ...prev, page: currentPage + 1 }))
+            }
           >
             Next
           </button>
@@ -153,4 +174,4 @@ export const RecordTable: React.FC<RecordTableProps> = ({
       )}
     </div>
   );
-};
+});

@@ -24,6 +24,8 @@ export function useRecords(defaultPagination: { page: number; limit: number }): 
   const [filters, setFilters] = useState<RecordFilters>({ status: '', search: '', ...defaultPagination });
   const [debouncedFilters, setDebouncedFilters] = useState<RecordFilters>(filters);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
+  const requestIdRef = useRef(0);
 
   // Debounce all filter changes to avoid firing an API request on every keystroke.
   useEffect(() => {
@@ -39,22 +41,52 @@ export function useRecords(defaultPagination: { page: number; limit: number }): 
   const refresh = useCallback(() => {
     setLoading(true);
     setError(null);
-    Promise.all([fetchRecords(debouncedFilters), fetchCounts()])
+
+    abortRef.current?.abort();
+    const currentController = new AbortController();
+    abortRef.current = currentController;
+    const requestId = ++requestIdRef.current;
+
+    Promise.all([
+      fetchRecords(debouncedFilters, currentController.signal),
+      fetchCounts(),
+    ])
       .then(([response, countsData]) => {
+        if (
+          requestId !== requestIdRef.current ||
+          currentController.signal.aborted
+        ) {
+          return;
+        }
         setRecords(response.data);
         setTotalRecords(response.total);
         setCounts(countsData);
       })
       .catch((err: unknown) => {
+        if (
+          requestId !== requestIdRef.current ||
+          currentController.signal.aborted
+        ) {
+          return;
+        }
         setError(err instanceof Error ? err.message : String(err));
       })
       .finally(() => {
-        setLoading(false);
+        if (
+          requestId === requestIdRef.current &&
+          !currentController.signal.aborted
+        ) {
+          setLoading(false);
+        }
       });
   }, [debouncedFilters]);
 
   useEffect(() => {
     refresh();
+    return () => {
+      requestIdRef.current += 1;
+      abortRef.current?.abort();
+    };
   }, [refresh]);
 
   return { records, counts, totalRecords, loading, error, refresh, filters, setFilters };

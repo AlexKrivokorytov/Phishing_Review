@@ -18,10 +18,24 @@ export class RecordService {
 
   // Gets a single record by its ID.
   public getById(id: string): RecordWithTags {
-    const record = this.recordRepo.findById(id);
-    if (!record) throw new Error(`Record not found: id=${id}`);
-    const tags = this.tagRepo.findByRecordId(id);
-    return { ...record, tags };
+    const hasOptimizedLookup =
+      "findByIdWithTags" in this.recordRepo &&
+      typeof this.recordRepo.findByIdWithTags === "function";
+
+    const record = hasOptimizedLookup
+      ? this.recordRepo.findByIdWithTags(id)
+      : (() => {
+          const baseRecord = this.recordRepo.findById(id);
+          return baseRecord
+            ? { ...baseRecord, tags: this.tagRepo.findByRecordId(id) }
+            : undefined;
+        })();
+
+    if (!record) {
+      throw new Error(`Record not found: id=${id}`);
+    }
+
+    return record;
   }
 
   // Updates a record with a review label, status, notes, and tags.

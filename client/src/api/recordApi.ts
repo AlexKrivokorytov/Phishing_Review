@@ -26,14 +26,21 @@ async function apiFetch<T>(endpoint: string, options?: RequestInit): Promise<T> 
   return response.json() as Promise<T>;
 }
 
-export async function fetchRecords(filters: RecordFilters = {}): Promise<{ data: Record[]; total: number }> {
+export async function fetchRecords(
+  filters: RecordFilters = {},
+  signal?: AbortSignal,
+): Promise<{ data: Record[]; total: number }> {
   const params = new URLSearchParams();
-  if (filters.status) params.append('status', filters.status);
-  if (filters.label) params.append('label', filters.label);
-  if (filters.search) params.append('search', filters.search);
-  if (filters.page) params.append('page', filters.page.toString());
-  if (filters.limit) params.append('limit', filters.limit.toString());
-  return apiFetch<{ data: Record[]; total: number }>(`/api/records?${params.toString()}`);
+  if (filters.status) params.append("status", filters.status);
+  if (filters.label) params.append("label", filters.label);
+  if (filters.search) params.append("search", filters.search);
+  if (filters.page) params.append("page", filters.page.toString());
+  if (filters.limit) params.append("limit", filters.limit.toString());
+
+  return apiFetch<{ data: Record[]; total: number }>(
+    `/api/records?${params.toString()}`,
+    signal ? { signal } : undefined,
+  );
 }
 
 export function fetchCounts(): Promise<RecordCounts> {

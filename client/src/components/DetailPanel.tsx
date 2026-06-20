@@ -1,5 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import type { Record, Tag, Label, Status, UpdateRecordPayload } from '../types/record';
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import type {
+  Record,
+  Tag,
+  Label,
+  Status,
+  UpdateRecordPayload,
+} from "../types/record";
 
 interface DetailPanelProps {
   record: Record | null;
@@ -20,21 +26,68 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
   statusOptions,
   labelOptions,
 }) => {
-  const [label, setLabel] = useState<Label | ''>('');
-  const [status, setStatus] = useState<Status>('new');
-  const [notes, setNotes] = useState('');
+  const [label, setLabel] = useState<Label | "">("");
+  const [status, setStatus] = useState<Status>("new");
+  const [notes, setNotes] = useState("");
   const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
     if (record) {
-      setLabel(record.label ?? '');
+      setLabel(record.label ?? "");
       setStatus(record.status);
-      setNotes(record.notes || '');
+      setNotes(record.notes || "");
       setSelectedTagIds(record.tags ? record.tags.map((t) => t.id) : []);
       setErrorMsg(null);
     }
   }, [record]);
+
+  const formattedImportedAt = useMemo(() => {
+    if (!record) {
+      return "";
+    }
+
+    return new Date(record.imported_at).toLocaleString();
+  }, [record]);
+
+  const formattedReviewedAt = useMemo(() => {
+    if (!record?.reviewed_at) {
+      return null;
+    }
+
+    return new Date(record.reviewed_at).toLocaleString();
+  }, [record]);
+
+  const selectedTagSet = useMemo(
+    () => new Set(selectedTagIds),
+    [selectedTagIds],
+  );
+
+  const handleSave = useCallback(async () => {
+    if (!record) {
+      return;
+    }
+
+    setErrorMsg(null);
+    try {
+      await onSave(record.id, {
+        label: label === "" ? null : label,
+        status,
+        notes,
+        tagIds: selectedTagIds,
+      });
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : String(err));
+    }
+  }, [label, notes, onSave, record, selectedTagIds, status]);
+
+  const handleTagToggle = useCallback((tagId: number) => {
+    setSelectedTagIds((prev) =>
+      prev.includes(tagId)
+        ? prev.filter((id) => id !== tagId)
+        : [...prev, tagId],
+    );
+  }, []);
 
   if (!record) {
     return (
@@ -44,31 +97,15 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
     );
   }
 
-  const handleSave = async () => {
-    setErrorMsg(null);
-    try {
-      await onSave(record.id, {
-        label: label === '' ? null : label,
-        status,
-        notes,
-        tagIds: selectedTagIds,
-      });
-    } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : String(err));
-    }
-  };
-
-  const handleTagToggle = (tagId: number) => {
-    setSelectedTagIds((prev) =>
-      prev.includes(tagId) ? prev.filter((id) => id !== tagId) : [...prev, tagId]
-    );
-  };
-
   return (
     <div className="detail-panel">
       {onClose && (
         <div className="detail-panel-header">
-          <button className="btn-close" onClick={onClose} aria-label="Close details">
+          <button
+            className="btn-close"
+            onClick={onClose}
+            aria-label="Close details"
+          >
             ✖ Close
           </button>
         </div>
@@ -90,12 +127,12 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
         </div>
         <div className="detail-field">
           <span className="field-label">Imported At</span>
-          <span className="field-value">{new Date(record.imported_at).toLocaleString()}</span>
+          <span className="field-value">{formattedImportedAt}</span>
         </div>
-        {record.reviewed_at && (
+        {formattedReviewedAt && (
           <div className="detail-field">
             <span className="field-label">Reviewed At</span>
-            <span className="field-value">{new Date(record.reviewed_at).toLocaleString()}</span>
+            <span className="field-value">{formattedReviewedAt}</span>
           </div>
         )}
       </section>
@@ -110,12 +147,14 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
         )}
 
         <div className="detail-field">
-          <label className="field-label" htmlFor="detail-label">Label</label>
+          <label className="field-label" htmlFor="detail-label">
+            Label
+          </label>
           <select
             id="detail-label"
             className="field-select"
             value={label}
-            onChange={(e) => setLabel(e.target.value as Label | '')}
+            onChange={(e) => setLabel(e.target.value as Label | "")}
           >
             <option value="">-- No Label --</option>
             {labelOptions.map((opt) => (
@@ -127,7 +166,9 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
         </div>
 
         <div className="detail-field">
-          <label className="field-label" htmlFor="detail-status">Status</label>
+          <label className="field-label" htmlFor="detail-status">
+            Status
+          </label>
           <select
             id="detail-status"
             className="field-select"
@@ -143,7 +184,9 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
         </div>
 
         <div className="detail-field detail-field--column">
-          <label className="field-label" htmlFor="detail-notes">Notes</label>
+          <label className="field-label" htmlFor="detail-notes">
+            Notes
+          </label>
           <textarea
             id="detail-notes"
             className="field-textarea"
@@ -156,7 +199,7 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
         <div className="detail-field detail-field--column">
           <span className="field-label">Evidence Tags</span>
           <div className="tags-checkbox-list">
-          {availableTags.map((tag) => (
+            {availableTags.map((tag) => (
               <label
                 key={tag.id}
                 htmlFor={`tag-cb-${tag.id}`}
@@ -165,13 +208,12 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
                 <input
                   type="checkbox"
                   id={`tag-cb-${tag.id}`}
-                  checked={selectedTagIds.includes(tag.id)}
+                  checked={selectedTagSet.has(tag.id)}
                   onChange={() => handleTagToggle(tag.id)}
                 />
                 <span className="tag-name-text">{tag.name}</span>
               </label>
             ))}
-
           </div>
         </div>
 
@@ -181,7 +223,7 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
           onClick={handleSave}
           disabled={saving}
         >
-          {saving ? 'Saving...' : 'Save'}
+          {saving ? "Saving..." : "Save"}
         </button>
       </section>
     </div>
