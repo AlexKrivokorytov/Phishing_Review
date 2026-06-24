@@ -40,7 +40,8 @@ export interface UpdateRecordPayload {
 export interface ImportResult {
   success: boolean;
   imported: number;
-  skipped: number;
+  skippedDuplicates: number;
+  skippedInvalid: number;
   message: string;
 }
 

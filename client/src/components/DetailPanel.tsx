@@ -163,6 +163,11 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
               </option>
             ))}
           </select>
+          {status === 'reviewed' && label === '' && (
+            <span className="field-hint field-hint--warn" role="note">
+              A label is recommended when marking a record as reviewed.
+            </span>
+          )}
         </div>
 
         <div className="detail-field">

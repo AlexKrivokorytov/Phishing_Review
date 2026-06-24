@@ -36,7 +36,8 @@ describe('ImportController', () => {
 
     vi.mocked(mockImportService.processFile).mockResolvedValueOnce({
       imported: 4,
-      skipped: 1,
+      skippedDuplicates: 1,
+      skippedInvalid: 0,
     });
 
     await controller.uploadFile(req, res, next);
@@ -46,8 +47,9 @@ describe('ImportController', () => {
     expect(res.json).toHaveBeenCalledWith({
       success: true,
       imported: 4,
-      skipped: 1,
-      message: '4 records imported successfully, 1 skipped due to duplicates.',
+      skippedDuplicates: 1,
+      skippedInvalid: 0,
+      message: '4 imported, 1 skipped (duplicates).',
     });
   });
 
@@ -60,7 +62,8 @@ describe('ImportController', () => {
 
     vi.mocked(mockImportService.processFile).mockResolvedValueOnce({
       imported: 2,
-      skipped: 0,
+      skippedDuplicates: 0,
+      skippedInvalid: 0,
     });
 
     await controller.uploadFile(req, res, next);

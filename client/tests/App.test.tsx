@@ -61,7 +61,7 @@ describe('App', () => {
     const exportJsonBtn = screen.getByRole('button', { name: 'Export JSON' });
     await user.click(exportJsonBtn);
 
-    expect(api.downloadExport).toHaveBeenCalledWith('json');
+    expect(api.downloadExport).toHaveBeenCalledWith('json', expect.objectContaining({}));
   });
 
   it('handles export error', async () => {
@@ -87,7 +87,7 @@ describe('App', () => {
   it('handles file import', async () => {
     vi.mocked(api.fetchConfig).mockResolvedValueOnce(mockConfig);
     vi.mocked(api.getTags).mockResolvedValueOnce([]);
-    vi.mocked(api.importFile).mockResolvedValueOnce({ success: true, imported: 1, skipped: 0, message: 'Done' });
+    vi.mocked(api.importFile).mockResolvedValueOnce({ success: true, imported: 1, skippedDuplicates: 0, skippedInvalid: 0, message: 'Done' });
 
     render(<App />);
     

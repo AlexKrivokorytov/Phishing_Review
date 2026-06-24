@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import type { ImportService } from '../services/ImportService';
+import type { ImportService, ImportSummary } from '../services/ImportService';
 import { CsvImportStrategy, JsonImportStrategy } from '../services/strategies/import.strategies';
 
 // Controller to handle importing files.
@@ -29,11 +29,20 @@ export class ImportController {
       res.status(200).json({
         success: true,
         imported: result.imported,
-        skipped: result.skipped,
-        message: `${result.imported} records imported successfully, ${result.skipped} skipped due to duplicates.`,
+        skippedDuplicates: result.skippedDuplicates,
+        skippedInvalid: result.skippedInvalid,
+        message: buildImportMessage(result),
       });
     } catch (error) {
       next(error);
     }
   }
+}
+
+// Builds a human-readable summary message from an import result.
+function buildImportMessage(result: ImportSummary): string {
+  const parts: string[] = [`${result.imported} imported`];
+  if (result.skippedDuplicates > 0) parts.push(`${result.skippedDuplicates} skipped (duplicates)`);
+  if (result.skippedInvalid > 0) parts.push(`${result.skippedInvalid} skipped (invalid format)`);
+  return parts.join(', ') + '.';
 }

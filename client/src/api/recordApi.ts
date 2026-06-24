@@ -72,8 +72,14 @@ export function importFile(file: File): Promise<ImportResult> {
   });
 }
 
-export async function downloadExport(format: 'json' | 'csv'): Promise<void> {
-  const response = await fetch(`${BASE_URL}/api/export/${format}`);
+export async function downloadExport(format: 'json' | 'csv', filters: RecordFilters = {}): Promise<void> {
+  const params = new URLSearchParams();
+  if (filters.status) params.append('status', filters.status);
+  if (filters.label) params.append('label', filters.label);
+  if (filters.search) params.append('search', filters.search);
+
+  const query = params.toString() ? `?${params.toString()}` : '';
+  const response = await fetch(`${BASE_URL}/api/export/${format}${query}`);
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
     throw new Error(errorData.error || `Request failed: ${response.statusText}`);

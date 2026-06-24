@@ -35,6 +35,7 @@ function MainApp({ appConfig }: { appConfig: AppConfig }) {
   const [tags, setTags] = useState<Tag[]>([]);
   const [saving, setSaving] = useState(false);
   const [importing, setImporting] = useState(false);
+  const [importMessage, setImportMessage] = useState<string | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
   const [exportError, setExportError] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -50,9 +51,11 @@ function MainApp({ appConfig }: { appConfig: AppConfig }) {
     if (!file) return;
 
     setImportError(null);
+    setImportMessage(null);
     setImporting(true);
     try {
-      await importFile(file);
+      const result = await importFile(file);
+      setImportMessage(result.message);
       refresh();
     } catch (err: unknown) {
       setImportError(err instanceof Error ? err.message : String(err));
@@ -81,7 +84,7 @@ function MainApp({ appConfig }: { appConfig: AppConfig }) {
   const handleExport = async (format: 'json' | 'csv') => {
     setExportError(null);
     try {
-      await downloadExport(format);
+      await downloadExport(format, filters);
     } catch (err: unknown) {
       setExportError(err instanceof Error ? err.message : String(err));
     }
@@ -107,6 +110,11 @@ function MainApp({ appConfig }: { appConfig: AppConfig }) {
         </div>
 
         <div className="header-actions">
+          {importMessage && (
+            <span className="import-success" role="status">
+              {importMessage}
+            </span>
+          )}
           {importError && (
             <span className="import-error" role="alert">
               {importError}

@@ -438,6 +438,12 @@
   margin-right: 15px;
 }
 
+.import-success {
+  color: var(--label-benign);
+  font-size: 12px;
+  margin-right: 15px;
+}
+
 .save-error {
   padding: 4px 0;
   display: block;
@@ -445,6 +451,16 @@
 
 .detail-error-message {
   margin-bottom: 10px;
+}
+
+.field-hint {
+  font-size: 11px;
+  margin-top: 4px;
+  display: block;
+}
+
+.field-hint--warn {
+  color: var(--label-suspicious);
 }
 
 .tags-checkbox-list {

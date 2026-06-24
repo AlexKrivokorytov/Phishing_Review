@@ -72,5 +72,20 @@ npm run typecheck # Runs TypeScript compiler checks
 ```
 
 ## 📂 Project Structure
-- `/server` — Express REST API and SQLite database layer. 
+- `/server` — Express REST API and SQLite database layer.
 - `/client` — React UI.
+
+## 🗄️ Demo Data
+
+The project ships with a seed script that populates the database with realistic synthetic phishing records for testing and demo purposes.
+
+```bash
+cd server
+npm run seed
+```
+
+> After seeding, start the app normally and the dashboard will be pre-filled with sample data.
+
+## 🔒 Offline / Local
+
+This application runs **entirely on your local machine**. No data is sent to any external server or cloud service. The SQLite database file is stored at `server/database.db`.
