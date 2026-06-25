@@ -1,4 +1,3 @@
-import { randomUUID } from 'crypto';
 import { DatabaseFactory } from '../db';
 import { RecordRepository } from '../repositories/RecordRepository';
 import { TagRepository } from '../repositories/TagRepository';

@@ -6,6 +6,7 @@ import type {
   Status,
   UpdateRecordPayload,
 } from "../types/record";
+import { getErrorMessage } from "../utils/errors";
 
 interface DetailPanelProps {
   record: Record | null;
@@ -77,7 +78,7 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
         tagIds: selectedTagIds,
       });
     } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : String(err));
+      setErrorMsg(getErrorMessage(err));
     }
   }, [label, notes, onSave, record, selectedTagIds, status]);
 

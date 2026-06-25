@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
 import express, { NextFunction, Request, Response } from 'express';
 import { RecordController } from '../../src/controllers/RecordController';
+import { RecordNotFoundError } from '../../src/utils/errors';
 import type { RecordService } from '../../src/services/RecordService';
 import type { RecordWithTags } from '../../src/types/record.types';
 
@@ -26,8 +27,8 @@ const buildApp = (controller: RecordController) => {
   app.get('/api/records/:id', controller.getById.bind(controller));
   app.get('/api/records', controller.getAll.bind(controller));
   app.patch('/api/records/:id', controller.update.bind(controller));
-  app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
-    res.status(500).json({ error: err.message });
+  app.use((err: Error & { status?: number }, _req: Request, res: Response, _next: NextFunction) => {
+    res.status(err.status ?? 500).json({ error: err.message });
   });
   return app;
 };
@@ -112,7 +113,7 @@ describe('RecordController', () => {
 
     it('returns 404 when service throws not found', async () => {
       mockService.getById = vi.fn().mockImplementation(() => {
-        throw new Error('Record not found: id=bad-id');
+        throw new RecordNotFoundError('bad-id');
       });
       const res = await request(app).get('/api/records/bad-id');
       expect(res.status).toBe(404);
@@ -160,7 +161,7 @@ describe('RecordController', () => {
 
     it('returns 404 when service throws not found', async () => {
       mockService.review = vi.fn().mockImplementation(() => {
-        throw new Error('Record not found: id=bad-id');
+        throw new RecordNotFoundError('bad-id');
       });
       const res = await request(app)
         .patch('/api/records/bad-id')

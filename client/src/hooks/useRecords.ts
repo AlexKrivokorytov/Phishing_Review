@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { fetchRecords, fetchCounts } from '../api/recordApi';
+import { getErrorMessage } from '../utils/errors';
 import type { Record, RecordCounts, RecordFilters } from '../types/record';
 
 interface UseRecordsReturn {
@@ -69,7 +70,7 @@ export function useRecords(defaultPagination: { page: number; limit: number }): 
         ) {
           return;
         }
-        setError(err instanceof Error ? err.message : String(err));
+        setError(getErrorMessage(err));
       })
       .finally(() => {
         if (

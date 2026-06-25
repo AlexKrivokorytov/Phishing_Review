@@ -12,12 +12,14 @@ const LABEL_DISPLAY: Record<Label, { color: string; text: string }> = {
   benign:     { color: 'var(--label-benign)',     text: 'BENIGN'     },
 };
 
-export const LabelBadge: React.FC<LabelBadgeProps> = ({ label }) => {
-  const display = label && LABEL_DISPLAY[label] ? LABEL_DISPLAY[label] : { color: 'var(--text-muted)', text: '—' };
+const FALLBACK_DISPLAY = { color: 'var(--text-muted)', text: '—' } as const;
+
+export const LabelBadge = React.memo(function LabelBadge({ label }: LabelBadgeProps) {
+  const display = (label && LABEL_DISPLAY[label]) || FALLBACK_DISPLAY;
 
   return (
     <span className="label-badge" style={{ color: display.color, fontWeight: 'bold' }}>
       {display.text}
     </span>
   );
-};
+});

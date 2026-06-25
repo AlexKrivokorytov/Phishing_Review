@@ -1,6 +1,7 @@
 import type { RecordRepository } from '../repositories/RecordRepository';
 import type { TagRepository } from '../repositories/TagRepository';
 import type { RecordWithTags, UpdateRecordDto, RecordFilters } from '../types/record.types';
+import { RecordNotFoundError } from '../utils/errors';
 
 // Service to manage phishing records.
 export class RecordService {
@@ -32,7 +33,7 @@ export class RecordService {
         })();
 
     if (!record) {
-      throw new Error(`Record not found: id=${id}`);
+      throw new RecordNotFoundError(id);
     }
 
     return record;
@@ -45,7 +46,7 @@ export class RecordService {
     }
 
     const affected = this.recordRepo.update(id, dto);
-    if (affected === 0) throw new Error(`Record not found: id=${id}`);
+    if (affected === 0) throw new RecordNotFoundError(id);
 
     if (dto.tagIds !== undefined) {
       this.tagRepo.setTagsForRecord(id, dto.tagIds);

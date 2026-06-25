@@ -1,4 +1,3 @@
- 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as api from '../../src/api/recordApi';
 import type { RecordFilters, UpdateRecordPayload } from '../../src/types/record';
@@ -98,6 +97,7 @@ describe('recordApi', () => {
   });
 
   it('downloadExport creates object URL and triggers download', async () => {
+    vi.useFakeTimers();
     const mockBlob = new Blob(['data'], { type: 'text/csv' });
     vi.mocked(globalThis.fetch).mockResolvedValueOnce({
       ok: true,
@@ -114,7 +114,9 @@ describe('recordApi', () => {
     } as unknown as HTMLAnchorElement;
     vi.spyOn(document, 'createElement').mockReturnValue(mockAnchor);
 
-    await api.downloadExport('csv');
+    const promise = api.downloadExport('csv');
+    await vi.runAllTimersAsync();
+    await promise;
 
     expect(globalThis.fetch).toHaveBeenCalledWith('http://localhost:3001/api/export/csv');
     expect(globalThis.URL.createObjectURL).toHaveBeenCalledWith(mockBlob);
@@ -122,6 +124,7 @@ describe('recordApi', () => {
     expect(mockAnchor.download).toContain('.csv');
     expect(mockAnchor.click).toHaveBeenCalled();
     expect(globalThis.URL.revokeObjectURL).toHaveBeenCalledWith('blob:test');
+    vi.useRealTimers();
   });
 
   it('downloadExport throws error if request fails and uses statusText fallback', async () => {

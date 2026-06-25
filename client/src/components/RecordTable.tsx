@@ -3,7 +3,8 @@ import type { Record, RecordFilters, Status, Label } from "../types/record";
 import { LabelBadge } from "./LabelBadge";
 import { StatusBadge } from "./StatusBadge";
 
-const PAGE_SIZE = 10;
+const COLUMN_COUNT = 5;
+const DEFAULT_PAGE_SIZE = 10;
 
 interface RecordTableProps {
   records: Record[];
@@ -58,10 +59,18 @@ export const RecordTable = React.memo(function RecordTable({
     }));
   };
 
+  const handleRowKeyDown = (e: React.KeyboardEvent<HTMLTableRowElement>, record: Record) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onSelect(record);
+    }
+  };
+
   const currentPage = filters.page || 1;
+  const pageSize = filters.limit || DEFAULT_PAGE_SIZE;
   const totalPages = useMemo(
-    () => Math.ceil(totalRecords / PAGE_SIZE) || 1,
-    [totalRecords],
+    () => Math.ceil(totalRecords / pageSize) || 1,
+    [totalRecords, pageSize],
   );
 
   return (
@@ -115,7 +124,7 @@ export const RecordTable = React.memo(function RecordTable({
             <tbody>
               {records.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="empty-state">
+                  <td colSpan={COLUMN_COUNT} className="empty-state">
                     No records found
                   </td>
                 </tr>
@@ -124,7 +133,10 @@ export const RecordTable = React.memo(function RecordTable({
                   <tr
                     key={record.id}
                     className={record.id === selectedId ? "selected" : ""}
+                    tabIndex={0}
+                    aria-selected={record.id === selectedId}
                     onClick={() => onSelect(record)}
+                    onKeyDown={(e) => handleRowKeyDown(e, record)}
                   >
                     <td className="cell-mono" title={record.url_or_email}>
                       {record.url_or_email}

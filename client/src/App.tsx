@@ -3,7 +3,9 @@ import { useRecords } from './hooks/useRecords';
 import { StatsBar } from './components/StatsBar';
 import { RecordTable } from './components/RecordTable';
 import { DetailPanel } from './components/DetailPanel';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { importFile, updateRecord, downloadExport, getTags, fetchConfig, type AppConfig } from './api/recordApi';
+import { getErrorMessage } from './utils/errors';
 import type { Record, Tag, UpdateRecordPayload } from './types/record';
 import './App.css';
 
@@ -14,7 +16,7 @@ function App() {
   React.useEffect(() => {
     fetchConfig()
       .then(setAppConfig)
-      .catch((err: unknown) => setConfigError(err instanceof Error ? err.message : String(err)));
+      .catch((err: unknown) => setConfigError(getErrorMessage(err)));
   }, []);
 
   if (configError) {
@@ -25,7 +27,11 @@ function App() {
     return <div className="table-loading">Loading configuration...</div>;
   }
 
-  return <MainApp appConfig={appConfig} />;
+  return (
+    <ErrorBoundary>
+      <MainApp appConfig={appConfig} />
+    </ErrorBoundary>
+  );
 }
 
 function MainApp({ appConfig }: { appConfig: AppConfig }) {
@@ -58,7 +64,7 @@ function MainApp({ appConfig }: { appConfig: AppConfig }) {
       setImportMessage(result.message);
       refresh();
     } catch (err: unknown) {
-      setImportError(err instanceof Error ? err.message : String(err));
+      setImportError(getErrorMessage(err));
     } finally {
       setImporting(false);
       if (fileInputRef.current) {
@@ -75,7 +81,7 @@ function MainApp({ appConfig }: { appConfig: AppConfig }) {
       setSelectedRecord(updated);
       refresh();
     } catch (err: unknown) {
-      setSaveError(err instanceof Error ? err.message : String(err));
+      setSaveError(getErrorMessage(err));
     } finally {
       setSaving(false);
     }
@@ -86,7 +92,7 @@ function MainApp({ appConfig }: { appConfig: AppConfig }) {
     try {
       await downloadExport(format, filters);
     } catch (err: unknown) {
-      setExportError(err instanceof Error ? err.message : String(err));
+      setExportError(getErrorMessage(err));
     }
   };
 

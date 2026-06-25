@@ -11,7 +11,7 @@ const STATUS_DISPLAY: Record<Status, { color: string; text: string }> = {
   needs_second_review: { color: 'var(--label-suspicious)', text: 'NEEDS REVIEW' },
 };
 
-export const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
+export const StatusBadge = React.memo(function StatusBadge({ status }: StatusBadgeProps) {
   const { color, text } = STATUS_DISPLAY[status];
 
   return (
@@ -19,4 +19,4 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
       {text}
     </span>
   );
-};
+});
